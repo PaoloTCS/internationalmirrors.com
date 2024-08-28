@@ -84,11 +84,96 @@
     </div>
 
     <h3>Join Our Mailing List</h3>
-    <p>Be the first to know when we launch. Enter your email below:</p>
-    <form action="https://formspree.io/f/mqazndby" method="POST">
-        <input type="email" name="email" placeholder="PaoloDiM@Gmail.com" required>
-        <button type="submit">Subscribe</button>
-    </form>
+    <p>Be the first to know when we launch. Enter your email below:</p> 
+
+
+<!-- modified  HTML  -->
+
+
+<form action="https://formspree.io/f/mqazndby" method="POST" onsubmit="garbleMessage()">
+    <input type="email" name="email" placeholder="PaoloDiM@Gmail.com" required maxlength="32" minlength="6" style="width: 36ch;">
+    <button type="submit">Subscribe</button>  
+    <p></p>
+    <label>
+      Your message:
+      <p></p>
+      <textarea id="message" name="message" maxlength="60" style="width: 100%;"></textarea>
+    </label>
+    <p></p>
+    <!-- your other form fields go here -->
+    <button type="submit">Send</button>
+  </form>
+  
+  <script>
+    function garbleMessage() {
+      var messageField = document.getElementById('message');
+      var originalMessage = messageField.value;
+      var garbledMessage = originalMessage.split('').map(() => '*').join('');
+      messageField.value = garbledMessage;
+      setTimeout(() => {
+        messageField.value = originalMessage;
+      }, 1000); // Restore the original message after 1 second
+    }
+  
+    document.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var form = event.target;
+      var formData = new FormData(form);
+      fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      }).then(response => {
+        if (response.ok) {
+          showSuccessMessage();
+        } else {
+          alert('Oops! There was a problem submitting your form');
+        }
+      }).catch(error => {
+        alert('Oops! There was a problem submitting your form');
+      });
+    });
+  
+    function showSuccessMessage() {
+      var successMessage = document.createElement('div');
+      successMessage.innerText = 'Brush pass successful!';
+      successMessage.style.position = 'fixed';
+      successMessage.style.top = '50%';
+      successMessage.style.left = '50%';
+      successMessage.style.transform = 'translate(-50%, -50%)';
+      successMessage.style.padding = '20px';
+      successMessage.style.backgroundColor = '#4CAF50';
+      successMessage.style.color = 'white';
+      successMessage.style.fontSize = '20px';
+      successMessage.style.borderRadius = '10px';
+      successMessage.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+      successMessage.style.zIndex = '1000';
+      document.body.appendChild(successMessage);
+  
+      // Add animation
+      successMessage.animate([
+        { transform: 'translate(-50%, -50%) scale(1)' },
+        { transform: 'translate(-50%, -50%) scale(1.1)' },
+        { transform: 'translate(-50%, -50%) scale(1)' }
+      ], {
+        duration: 500,
+        iterations: 3
+      });
+  
+      setTimeout(() => {
+        document.body.removeChild(successMessage);
+      }, 3000); // Remove the message after 3 seconds
+    }
+  </script>
+  
+  
+  
+
+<!-- End modify this form HTML and place wherever you want your form -->
+
+
 
     <p class="footnote">*Recruitment not guaranteed. Must pass rigorous background check (or be really good at faking one).</p>
 
