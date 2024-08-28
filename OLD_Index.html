@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Wilderness of Mirrors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .warning {
+            background-color: #ffeb3b;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .features, .side-effects {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #34495e;
+        }
+        .footnote {
+            font-size: 0.8em;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Wilderness of Mirrors</h1>
+    
+    <div class="warning">
+        <strong>ATTENTION POTENTIAL ASSET:</strong> This message will self-destruct in 5... 4... 3... (just kidding, we're not that advanced yet)
+    </div>
+
+    <p>Are you tired of your boring 9-to-5 job? Do you dream of a life filled with intrigue, danger, and questionable moral choices? Look no further! International Mirrors is recruiting*.</p>
+
+    <h2>Coming Soon: The Ultimate Spy Simulation</h2>
+
+    <p>Dive into the world of espionage without the risk of actual treason! Our state-of-the-art AI will generate thrilling scenarios that will test your wit, cunning, and ability to keep track of elaborate lies.</p>
+
+    <div class="features">
+        <h3>Features:</h3>
+        <ul>
+            <li>Recruit assets (or become one - we don't judge)</li>
+            <li>Master the art of doublespeak</li>
+            <li>Enjoy paranoia-inducing gameplay</li>
+            <li>Learn to trust no one, not even yourself</li>
+        </ul>
+    </div>
+
+    <div class="side-effects">
+        <h3>Warning: Side effects may include:</h3>
+        <ul>
+            <li>Constantly looking over your shoulder</li>
+            <li>Sudden urges to wear trench coats</li>
+            <li>Developing a taste for shaken, not stirred martinis</li>
+            <li>Uncontrollable desire to speak in code</li>
+        </ul>
+    </div>
+
+    <h3>Join Our Mailing List</h3>
+    <p>Be the first to know when we launch. Enter your email below:</p> 
+
+
+<!-- modified  HTML  -->
+
+  
+<form action="https://formspree.io/f/mqazndby" method="POST">
+    <input type="email" name="email" placeholder="PaoloDiM@Gmail.com" required maxlength="32" minlength="6" style="width: 36ch;">
+    <button type="submit">Subscribe</button>  
+    <p></p>
+    <label>
+      Your message:
+      <p></p>
+      <textarea id="message" name="message" maxlength="60" style="width: 100%;"></textarea>
+    </label>
+    <p></p>
+    <!-- your other form fields go here -->
+    <button type="submit">Send</button>
+</form>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var form = event.target;
+        var formData = new FormData(form);
+        fetch(form.action, {
+            method: form.method,
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                showSuccessMessage();
+                animateMessageBox();
+            } else {
+                alert('Oops! There was a problem submitting your form');
+            }
+        }).catch(error => {
+            alert('Oops! There was a problem submitting your form');
+        });
+    });
+
+    function showSuccessMessage() {
+        var successMessage = document.createElement('div');
+        successMessage.innerText = 'Brush pass successful!';
+        successMessage.style.position = 'fixed';
+        successMessage.style.top = '50%';
+        successMessage.style.left = '50%';
+        successMessage.style.transform = 'translate(-50%, -50%)';
+        successMessage.style.padding = '20px';
+        successMessage.style.backgroundColor = '#4CAF50';
+        successMessage.style.color = 'white';
+        successMessage.style.fontSize = '20px';
+        successMessage.style.borderRadius = '10px';
+        successMessage.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        successMessage.style.zIndex = '1000';
+        document.body.appendChild(successMessage);
+
+        // Add animation
+        successMessage.animate([
+            { transform: 'translate(-50%, -50%) scale(1)' },
+            { transform: 'translate(-50%, -50%) scale(1.1)' },
+            { transform: 'translate(-50%, -50%) scale(1)' }
+        ], {
+            duration: 500,
+            iterations: 3
+        });
+
+        setTimeout(() => {
+            document.body.removeChild(successMessage);
+        }, 3000); // Remove the message after 3 seconds
+    }
+
+    function animateMessageBox() {
+        var messageField = document.getElementById('message');
+        var originalMessage = messageField.value;
+        var jibberish = "G4rbl3d M3ss4g3!";
+        var interval = setInterval(() => {
+            messageField.value = jibberish.split('').sort(() => Math.random() - 0.5).join('');
+        }, 100);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            messageField.value = originalMessage;
+        }, 3000); // Animate jibberish for 3 seconds
+    }
+</script>
+
+  
+
+<!-- End modify this form HTML and place wherever you want your form -->
+
+
+
+    <p class="footnote">*Recruitment not guaranteed. Must pass rigorous background check (or be really good at faking one).</p>
+
+    <p class="footnote">Remember: In the world of espionage, the only thing certain is uncertainty. And taxes. Spies still have to pay taxes.</p>
+
+    <p><a href="privacy-policy.html">Privacy Policy</a></p></body>
+</html>
