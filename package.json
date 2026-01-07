@@ -1,0 +1,37 @@
+{
+  "name": "internationalmirrors",
+  "version": "1.0.0",
+  "description": "International Mirrors - Spy Simulation Game",
+  "scripts": {
+    "dev": "live-server --port=8080 --open=/index.html",
+    "build": "npm run minify:css && npm run minify:html",
+    "minify:css": "mkdir -p dist && cleancss -o dist/styles.min.css src/styles.css",
+    "minify:html": "html-minifier --collapse-whitespace --remove-comments --minify-css --minify-js -o dist/index.html index.html",
+    "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
+    "lint:html": "htmlhint *.html",
+    "lint:css": "stylelint \"**/*.css\"",
+    "deploy": "gh-pages -d ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PaoloTCS/internationalmirrors.com.git"
+  },
+  "keywords": [
+    "spy",
+    "game",
+    "simulation",
+    "espionage"
+  ],
+  "author": "Paolo Pignatelli",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "prettier": "^3.0.0",
+    "htmlhint": "^1.1.4",
+    "stylelint": "^15.10.0",
+    "stylelint-config-standard": "^34.0.0",
+    "clean-css-cli": "^5.6.2",
+    "html-minifier": "^4.0.0",
+    "gh-pages": "^6.0.0"
+  }
+}
