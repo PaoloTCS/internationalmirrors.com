@@ -1,0 +1,2301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to the Wilderness of Mirrors</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .highlight {
+        background-color: #ffff00;
+        padding: 10px;
+        border: 1px solid #e6e600;
+        margin-bottom: 20px;
+      }
+      .warning-highlight {
+        background-color: #ffffcc;
+        padding: 2px 5px;
+        border: 1px solid #e6e600;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+      }
+      .gradient-divider {
+        height: 3px;
+        background: linear-gradient(to right, #2c3e50, #3498db, #2c3e50);
+        margin: 20px 0;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+      }
+      button {
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #34495e;
+      }
+      a {
+        color: #2980b9;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .claude-link {
+        font-weight: bold;
+        color: #2980b9;
+      }
+
+      /* SPY ANIMATION STYLES */
+      .spy-character {
+        position: fixed;
+        font-size: 30px;
+        z-index: 9999;
+        cursor: pointer;
+        transition: transform 0.3s;
+        user-select: none;
+        filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+      }
+
+      .spy-character:hover {
+        transform: scale(1.3);
+      }
+
+      @keyframes spy-walk-right {
+        from {
+          left: -100px;
+        }
+        to {
+          left: calc(100% + 100px);
+        }
+      }
+
+      @keyframes spy-walk-left {
+        from {
+          right: -100px;
+        }
+        to {
+          right: calc(100% + 100px);
+        }
+      }
+
+      @keyframes missile-flight {
+        0% {
+          left: -50px;
+          top: 20%;
+          transform: rotate(45deg);
+        }
+        100% {
+          left: calc(100% + 50px);
+          top: 80%;
+          transform: rotate(45deg);
+        }
+      }
+
+      @keyframes parachute-drop {
+        0% {
+          top: -100px;
+          transform: rotate(0deg);
+        }
+        100% {
+          top: calc(100% + 50px);
+          transform: rotate(10deg);
+        }
+      }
+
+      @keyframes helicopter-fly {
+        0% {
+          right: -150px;
+          top: 10%;
+        }
+        100% {
+          right: calc(100% + 150px);
+          top: 15%;
+        }
+      }
+
+      @keyframes document-fly {
+        0% {
+          left: 30%;
+          top: -50px;
+          transform: rotate(0deg);
+          opacity: 1;
+        }
+        50% {
+          transform: rotate(180deg);
+        }
+        100% {
+          left: 70%;
+          top: calc(100% + 50px);
+          transform: rotate(360deg);
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes periscope-peek {
+        0%,
+        100% {
+          bottom: -50px;
+        }
+        50% {
+          bottom: 0px;
+        }
+      }
+
+      .spy-popup {
+        position: fixed;
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        border: 3px solid #e74c3c;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        max-width: 350px;
+        animation: popup-appear 0.5s ease-out;
+        font-family: "Courier New", monospace;
+      }
+
+      @keyframes popup-appear {
+        from {
+          transform: scale(0) rotate(180deg);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      .spy-popup-close {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .spy-popup-close:hover {
+        background: #c0392b;
+      }
+
+      @keyframes urgent-blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      .missile-trail {
+        position: fixed;
+        width: 3px;
+        height: 30px;
+        background: linear-gradient(to bottom, transparent, #ff6b6b, #ff0000);
+        z-index: 9998;
+        pointer-events: none;
+      }
+
+      /* B-MOVIE FILE TRANSFER EFFECTS */
+      .file-notification {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.95);
+        border: 3px solid #00ff00;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 30px 50px;
+        z-index: 10002;
+        text-align: center;
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        animation: file-flash 2s ease-in-out;
+      }
+
+      @keyframes file-flash {
+        0%,
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+        10%,
+        90% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.05);
+        }
+      }
+
+      .file-notification.danger {
+        border-color: #ff0000;
+        color: #ff0000;
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        animation: file-flash-red 2s ease-in-out;
+      }
+
+      @keyframes file-flash-red {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          opacity: 1;
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          opacity: 0.3;
+        }
+      }
+
+      .progress-bar-container {
+        width: 300px;
+        height: 20px;
+        background: #000;
+        border: 2px solid #00ff00;
+        margin: 15px auto 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #00ff00, #00aa00);
+        width: 0%;
+        transition: width 0.1s linear;
+        box-shadow: 0 0 10px #00ff00;
+      }
+
+      .corner-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid #00ff00;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        padding: 10px 15px;
+        z-index: 10001;
+        max-width: 250px;
+        animation: slide-in-right 0.5s ease-out;
+      }
+
+      @keyframes slide-in-right {
+        from {
+          transform: translateX(300px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* DRAMATIC BLACKOUT SEQUENCE */
+      .blackout-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: blackout-fade 2s ease-in;
+      }
+
+      @keyframes blackout-fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .recruitment-message {
+        max-width: 700px;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        text-align: center;
+        padding: 40px;
+        animation: message-appear 3s ease-out 2s both;
+      }
+
+      @keyframes message-appear {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .recruitment-message h2 {
+        color: #ff0000;
+        font-size: 32px;
+        margin-bottom: 30px;
+        animation: text-flicker 0.5s infinite alternate;
+        text-shadow: 0 0 10px #ff0000;
+      }
+
+      @keyframes text-flicker {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.8;
+        }
+      }
+
+      .recruitment-message p {
+        font-size: 18px;
+        line-height: 1.8;
+        margin-bottom: 20px;
+        color: #00ff00;
+      }
+
+      .evidence-frame {
+        border: 3px solid #ff0000;
+        padding: 20px;
+        margin: 30px 0;
+        background: rgba(255, 0, 0, 0.1);
+        animation: evidence-pulse 2s infinite;
+      }
+
+      @keyframes evidence-pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 10px #ff0000;
+        }
+        50% {
+          box-shadow: 0 0 25px #ff0000;
+        }
+      }
+
+      .recruitment-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+        animation: buttons-appear 1s ease-out 5s both;
+      }
+
+      @keyframes buttons-appear {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .recruitment-btn {
+        padding: 15px 30px;
+        font-size: 16px;
+        font-family: "Courier New", monospace;
+        font-weight: bold;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+      }
+
+      .recruitment-btn.accept {
+        background: #00ff00;
+        color: #000;
+        border-color: #00ff00;
+      }
+
+      .recruitment-btn.accept:hover {
+        background: #00aa00;
+        box-shadow: 0 0 20px #00ff00;
+      }
+
+      .recruitment-btn.decline {
+        background: #ff0000;
+        color: #fff;
+        border-color: #ff0000;
+      }
+
+      .recruitment-btn.decline:hover {
+        background: #cc0000;
+        box-shadow: 0 0 20px #ff0000;
+      }
+
+      .recruitment-btn.negotiate {
+        background: #ffff00;
+        color: #000;
+        border-color: #ffff00;
+      }
+
+      .recruitment-btn.negotiate:hover {
+        background: #cccc00;
+        box-shadow: 0 0 20px #ffff00;
+      }
+
+      .typing-text {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        animation: typing 3s steps(40, end);
+      }
+
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to the Wilderness of Mirrors</h1>
+
+    <!-- Technical Connection to CollaborativAI -->
+    <div
+      style="
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #4a90e2;
+      "
+    >
+      <h2 style="color: white; margin-top: 0; font-size: 1.3em">
+        Powered by CollaborativAI Maestro Engine
+      </h2>
+      <p style="margin-bottom: 10px; line-height: 1.7">
+        This game demonstrates the
+        <strong>Maestro multi-AI orchestration platform</strong> developed by
+        <a
+          href="https://collaborativ.ai"
+          style="color: #ffd700; text-decoration: underline; font-weight: bold"
+          >CollaborativAI</a
+        >. The game mechanics are powered by the same geometric consensus algorithms used in Maestro
+        3 and 4 for research applications.
+      </p>
+      <p style="margin-bottom: 10px; line-height: 1.7">
+        <strong>How it works:</strong> The "intelligence agencies" (CIA, MI6, DGSE) represent
+        different AI engines in a Maestro consensus pool. Each agent's position in the vector space
+        corresponds to their "intelligence report" embedding. The game's "mole detection" system
+        uses Maestro's <strong>barycenter analysis</strong> (finding the geometric center of
+        consensus) and <strong>distance metrics</strong>
+        (Euclidean, cosine similarity) to identify outliers—the same algorithms that detect
+        anomalies in multi-AI research debates.
+      </p>
+      <p style="margin-bottom: 0; line-height: 1.7">
+        This demonstrates that Maestro is not just an enhanced chatbot platform—it's a
+        <strong>general-purpose multi-AI coordination engine</strong>
+        that can power games, simulations, NPC behavior systems, and any application requiring
+        intelligent consensus across multiple AI models. The geometric convergence algorithms
+        (Voronoi partitions, clique clustering, anomaly detection) work identically whether
+        analyzing research questions or game state.
+      </p>
+      <p style="margin-top: 15px; margin-bottom: 0; font-size: 0.95em; opacity: 0.95">
+        <strong>Learn more:</strong>
+        <a href="https://collaborativ.ai" style="color: #ffd700; text-decoration: underline"
+          >CollaborativAI Research</a
+        >
+        |
+        <a
+          href="https://app2.collaborativ.ai/workspace/new?mode=maestro-3"
+          style="color: #ffd700; text-decoration: underline"
+          >Try Maestro 3</a
+        >
+      </p>
+    </div>
+
+    <div class="gradient-divider"></div>
+
+    <div class="highlight">
+      <h3>ATTENTION POTENTIAL ASSET:</h3>
+      <p>
+        This message will self-destruct in 5... 4... 3... (just kidding, we're not that advanced
+        yet. Or are we? 🕵️‍♂️)
+      </p>
+    </div>
+
+    <p>
+      Are you tired of your boring 9-to-5 job? Do you dream of a life filled with intrigue, danger,
+      and the constant fear of polygraph tests? Look no further! International Mirrors is
+      recruiting*.
+    </p>
+
+    <h2>Coming Soon: The Ultimate Spy Simulation</h2>
+
+    <!-- MISSION CONTROL DASHBOARD -->
+    <div
+      class="highlight"
+      style="background-color: #000; color: #00ff00; border: 2px solid #004400"
+    >
+      <h3 style="color: #00ff00; border-bottom: 1px solid #004400; font-family: monospace">
+        > MISSION COMMAND: MAESTRO_V4_ENGINE
+      </h3>
+      <style>
+        .mission-control {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+        .radar-panel {
+          flex: 1;
+          min-width: 300px;
+          height: 300px;
+          border: 1px solid #004400;
+          position: relative;
+        }
+        .terminal-panel {
+          flex: 1;
+          min-width: 300px;
+          height: 300px;
+          background: #0a0a0a;
+          font-family: monospace;
+          font-size: 12px;
+          overflow-y: auto;
+          padding: 10px;
+          border: 1px solid #004400;
+        }
+        .log-line {
+          margin-bottom: 5px;
+        }
+        .log-line.system {
+          color: #0088ff;
+        }
+        .log-line.warning {
+          color: #ffff00;
+        }
+        .log-line.danger {
+          color: #ff0000;
+          font-weight: bold;
+        }
+        .log-line.info {
+          color: #00ff00;
+        }
+        .timestamp {
+          color: #444;
+          margin-right: 5px;
+        }
+      </style>
+      <div class="mission-control">
+        <div class="radar-panel">
+          <canvas id="radar-screen" style="width: 100%; height: 100%"></canvas>
+          <div
+            style="
+              position: absolute;
+              top: 5px;
+              left: 5px;
+              font-family: monospace;
+              font-size: 10px;
+              color: rgba(0, 255, 0, 0.5);
+            "
+          >
+            SECTOR: EUROPE_WEST
+          </div>
+        </div>
+        <div class="terminal-panel" id="terminal-log">
+          <div class="log-line system">Initializing System...</div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Dive into the world of espionage without the risk of actual treason! Our state-of-the-art AI
+      will generate thrilling scenarios that will test your wit, cunning, and ability to keep track
+      of elaborate lies. It's like social media, but with more fake identities!
+    </p>
+
+    <h3>Features:</h3>
+    <ul>
+      <li>Recruit assets (or become one - we don't judge, but our AI might)</li>
+      <li>Master the art of doublespeak (and triple-speak for overachievers)</li>
+      <li>Enjoy paranoia-inducing gameplay (now with 50% more paranoia!)</li>
+      <li>Learn to trust no one, not even yourself (especially not yourself)</li>
+      <li>
+        Decipher cryptic messages (like "Your mission, should you choose to accept it, is to pick up
+        milk on your way home")
+      </li>
+    </ul>
+
+    <h3><span class="warning-highlight">Warning</span>: Side effects may include:</h3>
+    <ul>
+      <li>Constantly looking over your shoulder (great for neck exercises!)</li>
+      <li>Sudden urges to wear trench coats (even in summer)</li>
+      <li>
+        Developing a taste for shaken, not stirred martinis (and an inexplicable British accent)
+      </li>
+      <li>
+        Uncontrollable desire to speak in code ("The eagle has landed" now means "I've ordered
+        pizza")
+      </li>
+      <li>
+        Suspicion that your pet might be a double agent (Sorry, Mr. Whiskers, but we're onto you)
+      </li>
+    </ul>
+
+    <h3>Join Our Mailing List</h3>
+    <p>
+      Be the first to know when we launch. Enter your email below (we promise it won't be
+      intercepted by enemy agents... probably):
+    </p>
+
+    <form id="subscribe-form" action="https://formspree.io/f/mqazndby" method="POST">
+      <input type="hidden" name="_to" value="Paolo@Collaborativ.ai" />
+      <input type="hidden" name="_subject" value="New International Mirrors Subscriber" />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="YourAlias@totallynotaspy.com"
+        required
+      />
+      <div id="subscribe-status" style="margin-top: 10px; font-weight: bold; display: none"></div>
+      <button type="submit">Subscribe (or Don't. We'll Find You Anyway)</button>
+    </form>
+
+    <h3>Leave a Coded Message</h3>
+    <p>
+      Got a burning question? Leave it here in our state-of-the-art, definitely-not-monitored
+      message box. All messages are automatically encrypted using our patented "RNG-47" algorithm
+      (Random Number Generator, 47th iteration). We can't decrypt them either, but it looks cool!
+    </p>
+    <p style="font-size: 0.9em; color: #666; font-style: italic">
+      💡 Pro Tip: Include your favorite spy movie quote for bonus points. "The name's Bond..." gets
+      you nowhere, but we appreciate the effort.
+    </p>
+
+    <form id="message-form" action="https://formspree.io/f/mqazndby" method="POST">
+      <input type="hidden" name="_to" value="Paolo@Collaborativ.ai" />
+      <input type="hidden" name="_subject" value="Coded Message from International Mirrors" />
+      <textarea
+        id="message"
+        name="message"
+        placeholder="The fox jumps at midnight... 🦊&#10;&#10;Or just say hi. We're not picky.&#10;&#10;(This message will self-destruct in 5... 4... 3... just kidding, we're still working on that feature)"
+        required
+        rows="6"
+        style="font-family: &quot;Courier New&quot;, monospace"
+      ></textarea>
+      <div id="message-status" style="margin-top: 10px; font-weight: bold; display: none"></div>
+      <button type="submit">🚀 Send (Into the Void)</button>
+      <button type="button" id="encrypt-btn" style="margin-left: 10px; background-color: #555">
+        🔐 Encrypt Message (Placebo Mode)
+      </button>
+    </form>
+
+    <!-- Add after the forms section, before the recruitment disclaimer -->
+
+    <div class="highlight">
+      <h3>Spy Tech Support FAQ</h3>
+      <p>
+        <strong>Q:</strong> "I got caught, am in a Lubyanka cell. There are large rats running
+        around. Are they ours?"
+      </p>
+      <p>
+        <strong>A:</strong> If they're wearing tiny earpieces and designer fur coats, they're ours.
+        If they're filing paperwork and demanding bribes, they're FSB agents. Either way, don't
+        mention the cheese in your sock.
+      </p>
+
+      <p><strong>Q:</strong> "I accidentally recruited my neighbor's cat as an asset."</p>
+      <p>
+        <strong>A:</strong> Common mistake. Cats are notoriously unreliable double agents. They'll
+        work for anyone with a can of tuna. Recommend immediate debriefing (catnip optional).
+      </p>
+
+      <p>
+        <strong>Q:</strong> "Last thing I remember is laying in bed with a beautiful woman, but now
+        it's freezing cold outside, everyone around here is chained, and the woman is gone!"
+      </p>
+      <p>
+        <strong>A:</strong> Congratulations! You've experienced the classic "Honey Trap to Siberia
+        Express" package. Please rate your experience on TripAdvisor. Pro tip: Next time, try our
+        "Suspicious But Safe" dating service.
+      </p>
+
+      <p>
+        <strong>Q:</strong> "My cover identity as a mime is becoming too convincing. I haven't
+        spoken in weeks."
+      </p>
+      <p>
+        <strong>A:</strong> Try our emergency deprogramming service: 6 hours of non-stop dad jokes
+        and karaoke. Warning: May cause excessive talking.
+      </p>
+
+      <p><strong>Q:</strong> "The microdot in my caviar was actually caviar. What now?"</p>
+      <p>
+        <strong>A:</strong> Enjoy your dinner. Sometimes a fish egg is just a fish egg. But maybe
+        don't tell accounting about the mixup.
+      </p>
+    </div>
+
+    <div class="highlight">
+      <h3>Field Equipment Ratings (2024 Edition)</h3>
+
+      <p>
+        ⭐⭐⭐⭐⭐ <strong>Trench Coat™ Pro Max</strong><br />
+        Perfect for summer surveillance! Features 47 pockets, built-in air conditioning, and
+        converts into an emergency tent. Warning: May cause suspicious sweating in August.
+      </p>
+
+      <p>
+        ⭐⭐⭐⭐ <strong>Microphone-in-a-Potted-Plant 3000</strong><br />
+        Your ficus is listening! Now with improved photosynthesis algorithms. Minus one star because
+        it keeps demanding water breaks.
+      </p>
+
+      <p>
+        ⭐⭐⭐ <strong>Invisible Ink Pen Plus+</strong><br />
+        Works great! But we can't find it. If you see it, please let us know.
+      </p>
+
+      <p>
+        ⭐⭐ <strong>Self-Destructing Briefcase</strong><br />
+        Destroys itself perfectly! Unfortunately, also destroys the documents inside. Currently
+        seeking new R&D team.
+      </p>
+
+      <p>
+        ⭐ <strong>AI-Powered Disguise Generator</strong><br />
+        Still in beta. Currently stuck suggesting "mustache + hat" for every situation. Even for
+        dogs.
+      </p>
+    </div>
+
+    <!-- Continue with original content (recruitment disclaimer, etc.) -->
+
+    <p class="highlight">
+      <small
+        >*Recruitment not guaranteed. Must pass rigorous background check (or be really good at
+        faking one). Ability to rock a tuxedo/evening gown while diffusing bombs is a plus.</small
+      >
+    </p>
+
+    <p>
+      Remember: In the world of espionage, the only thing certain is uncertainty. And taxes. Spies
+      still have to pay taxes. (Even on their secret island lairs)
+    </p>
+
+    <div class="highlight">
+      <h3>🎭 Spy Identity Generator</h3>
+      <p>
+        Need a cover identity? Our AI-powered (read: random number generator) spy name generator
+        will create the perfect alias for your next mission. Or your next coffee shop order. We
+        don't judge.
+      </p>
+      <button id="generate-spy-name" style="margin-bottom: 10px">
+        🎲 Generate Your Spy Identity
+      </button>
+      <div
+        id="spy-name-result"
+        style="
+          font-family: monospace;
+          font-size: 1.1em;
+          color: #2c3e50;
+          min-height: 30px;
+          padding: 10px;
+          background: #f9f9f9;
+          border: 1px solid #ddd;
+          display: none;
+        "
+      ></div>
+    </div>
+
+    <div class="highlight">
+      <h3>🔍 Paranoia Level Calculator</h3>
+      <p>
+        Wondering if you're being watched? (Spoiler: You probably are.) Take our scientifically
+        inaccurate paranoia assessment to determine your current threat level. Results may vary
+        based on how many times you've checked your rearview mirror today.
+      </p>
+      <button id="calculate-paranoia" style="margin-bottom: 10px">
+        🧠 Calculate My Paranoia Level
+      </button>
+      <div
+        id="paranoia-result"
+        style="
+          font-family: monospace;
+          font-size: 1.1em;
+          color: #2c3e50;
+          min-height: 30px;
+          padding: 10px;
+          background: #f9f9f9;
+          border: 1px solid #ddd;
+          display: none;
+        "
+      ></div>
+    </div>
+
+    <div class="highlight">
+      <h3>Advanced Training Materials</h3>
+      <p>Choose your adventure:</p>
+      <ul style="list-style: none; padding-left: 0">
+        <li>
+          🤝 <a href="recruitment-techniques.html">The Gentle Art of Asset Recruitment</a> - For
+          those who prefer making friends and influencing people
+        </li>
+        <li>
+          😅 <a href="unfriendly-interrogation.html">So You Got Caught: A Survival Guide</a> - For
+          when that recruitment attempt didn't quite go as planned
+        </li>
+      </ul>
+      <p>
+        <small
+          >Note: Reading both is recommended. You never know which side of the table you'll end up
+          on.</small
+        >
+      </p>
+    </div>
+
+    <div class="highlight">
+      <h3>Top Secret: The AI Behind the Curtain</h3>
+
+      <p>Warning: Classified Information Ahead</p>
+      <p>
+        In the spirit of transparency (a foreign concept in espionage), we must disclose that this
+        webpage was set up with assistance from an AI agent codenamed
+        <a href="https://www.anthropic.com" class="claude-link">"Claude"</a>, which also
+        participated in the game design process. However, in the actual game simulation above,
+        Claude is just another AI engine in the Maestro system—no more special than GPT-4, Gemini,
+        or any other agent in the consensus pool.
+      </p>
+      <p>
+        <strong>The Real Story:</strong> This game demonstrates the
+        <a href="https://collaborativ.ai" class="claude-link">Maestro Engine</a>—a multi-AI
+        orchestration platform that coordinates multiple AI models to find consensus and detect
+        anomalies through geometric convergence algorithms. The "agents" you see (CIA, MI6, DGSE)
+        represent different AI engines, and the "mole detection" system uses Maestro's barycenter
+        analysis and distance metrics to identify outliers—the same technology used for research,
+        but here powering game mechanics.
+      </p>
+      <p>
+        This proves that Maestro isn't just for enhanced chatbots—it's a general-purpose multi-AI
+        coordination engine that can power games, simulations, and any application requiring
+        intelligent consensus. In the game itself, Claude is just one engine among many,
+        participating in the same geometric consensus analysis as all the others. The power comes
+        from orchestration, not from any single AI.
+      </p>
+      <p>
+        Remember: In the world of multi-AI orchestration, no single engine is special—the magic
+        happens when they work together. Stay vigilant, and always check your consensus metrics.
+        🎮🤖
+      </p>
+    </div>
+
+    <footer>
+      <a href="privacy-policy.html">Privacy Policy (As If We'd Tell You)</a>
+    </footer>
+
+    <script>
+      // Form Handlers
+      const subscribeForm = document.getElementById("subscribe-form");
+      const messageForm = document.getElementById("message-form");
+      const subscribeStatus = document.getElementById("subscribe-status");
+      const messageStatus = document.getElementById("message-status");
+      const encryptBtn = document.getElementById("encrypt-btn");
+
+      // Email subscription handler
+      subscribeForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const button = subscribeForm.querySelector('button[type="submit"]');
+        const originalText = button.textContent;
+
+        button.disabled = true;
+        button.textContent = "Transmitting... 📡";
+        subscribeStatus.style.display = "block";
+        subscribeStatus.style.color = "#0088ff";
+        subscribeStatus.textContent = "Establishing secure connection...";
+
+        try {
+          const formData = new FormData(subscribeForm);
+
+          const response = await fetch(subscribeForm.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          if (response.ok) {
+            subscribeStatus.style.color = "#00ff00";
+            subscribeStatus.textContent =
+              "✅ Mission accomplished! Your email has been secured and sent to Paolo@Collaborativ.ai. Check your inbox for confirmation (or don't, we'll find you anyway).";
+            subscribeForm.reset();
+          } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Form submission failed");
+          }
+        } catch (error) {
+          subscribeStatus.style.color = "#ff0000";
+          subscribeStatus.textContent =
+            "❌ Transmission failed! Secure channel compromised. Please try again or contact us directly at Paolo@Collaborativ.ai";
+          console.error("Form submission error:", error);
+        }
+
+        setTimeout(() => {
+          button.disabled = false;
+          button.textContent = originalText;
+        }, 3000);
+      });
+
+      // Coded message handler
+      messageForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const message = document.getElementById("message").value;
+        const button = messageForm.querySelector('button[type="submit"]');
+        const originalText = button.textContent;
+
+        button.disabled = true;
+        button.textContent = "Encrypting & Transmitting... 🔐📡";
+        messageStatus.style.display = "block";
+        messageStatus.style.color = "#0088ff";
+
+        // Show encryption animation
+        const encryptionSteps = [
+          "Initializing quantum encryption...",
+          "Scrambling message with RNG-47 algorithm...",
+          "Adding random spy movie references...",
+          "Encoding with invisible ink protocol...",
+          "Transmitting via secure channel...",
+        ];
+
+        let stepIndex = 0;
+        const encryptionInterval = setInterval(() => {
+          if (stepIndex < encryptionSteps.length) {
+            messageStatus.textContent = encryptionSteps[stepIndex];
+            stepIndex++;
+          } else {
+            clearInterval(encryptionInterval);
+          }
+        }, 500);
+
+        try {
+          const formData = new FormData(messageForm);
+
+          const response = await fetch(messageForm.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          if (response.ok) {
+            clearInterval(encryptionInterval);
+            messageStatus.style.color = "#00ff00";
+            messageStatus.textContent =
+              "✅ Message successfully encrypted and dispatched to Paolo@Collaborativ.ai! Our handlers will decode it... eventually. (Estimated time: 3-5 business days, or never. We're spies, not customer service.)";
+            messageForm.reset();
+            // Reset encrypt button state
+            isEncrypted = false;
+            encryptBtn.textContent = "🔐 Encrypt Message (Placebo Mode)";
+            const messageField = document.getElementById("message");
+            messageField.style.color = "";
+            messageField.style.backgroundColor = "";
+          } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Form submission failed");
+          }
+        } catch (error) {
+          clearInterval(encryptionInterval);
+          messageStatus.style.color = "#ff0000";
+          messageStatus.textContent =
+            "❌ Transmission failed! Secure channel compromised. Please try again or contact us directly at Paolo@Collaborativ.ai";
+          console.error("Form submission error:", error);
+        }
+
+        setTimeout(() => {
+          button.disabled = false;
+          button.textContent = originalText;
+        }, 4000);
+      });
+
+      // Encrypt button (placebo mode - just for fun)
+      let isEncrypted = false;
+      let originalMessageText = "";
+
+      encryptBtn.addEventListener("click", () => {
+        const messageField = document.getElementById("message");
+
+        if (!isEncrypted) {
+          originalMessageText = messageField.value;
+
+          if (!originalMessageText.trim()) {
+            messageStatus.style.display = "block";
+            messageStatus.style.color = "#ff0000";
+            messageStatus.textContent = "❌ No message to encrypt! Write something first, agent.";
+            setTimeout(() => {
+              messageStatus.style.display = "none";
+            }, 3000);
+            return;
+          }
+
+          messageField.value = `[ENCRYPTED] ${originalMessageText} [END TRANSMISSION]`;
+          messageField.style.color = "#00ff00";
+          messageField.style.backgroundColor = "#001100";
+          encryptBtn.textContent = "🔓 Decrypt Message";
+          isEncrypted = true;
+
+          messageStatus.style.display = "block";
+          messageStatus.style.color = "#00ff00";
+          messageStatus.textContent =
+            "🔐 Message \"encrypted\"! (It's actually just wrapped in brackets, but don't tell anyone.)";
+
+          setTimeout(() => {
+            messageStatus.style.display = "none";
+          }, 3000);
+        } else {
+          messageField.value = originalMessageText;
+          messageField.style.color = "";
+          messageField.style.backgroundColor = "";
+          encryptBtn.textContent = "🔐 Encrypt Message (Placebo Mode)";
+          isEncrypted = false;
+
+          messageStatus.style.display = "block";
+          messageStatus.style.color = "#0088ff";
+          messageStatus.textContent =
+            "🔓 Message decrypted! The brackets have been removed. Mission accomplished.";
+
+          setTimeout(() => {
+            messageStatus.style.display = "none";
+          }, 3000);
+        }
+      });
+
+      // Spy Name Generator
+      const spyNameGenerator = document.getElementById("generate-spy-name");
+      const spyNameResult = document.getElementById("spy-name-result");
+
+      const firstNames = [
+        "Shadow",
+        "Raven",
+        "Phoenix",
+        "Viper",
+        "Cobra",
+        "Falcon",
+        "Wolf",
+        "Tiger",
+        "Lynx",
+        "Hawk",
+        "Orion",
+        "Atlas",
+        "Nova",
+        "Echo",
+        "Steel",
+        "Blade",
+        "Storm",
+        "Frost",
+        "Flame",
+        "Thunder",
+      ];
+      const lastNames = [
+        "Blackwood",
+        "Sterling",
+        "Cross",
+        "Stone",
+        "Reed",
+        "Fox",
+        "Gray",
+        "Knight",
+        "Hunter",
+        "Rivers",
+        "Brooks",
+        "Winters",
+        "Summers",
+        "Fields",
+        "Lane",
+        "Park",
+        "Bridge",
+        "Hill",
+        "Lake",
+        "Moon",
+      ];
+      const codeNames = [
+        "The Ghost",
+        "Silent Arrow",
+        "Midnight Runner",
+        "The Phantom",
+        "Dark Whisper",
+        "Steel Shadow",
+        "The Enigma",
+        "Crimson Blade",
+        "The Watcher",
+        "Silver Fox",
+      ];
+
+      spyNameGenerator.addEventListener("click", () => {
+        const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+        const codeName = codeNames[Math.floor(Math.random() * codeNames.length)];
+        const number = Math.floor(Math.random() * 99) + 1;
+
+        spyNameResult.style.display = "block";
+        spyNameResult.innerHTML = `
+          <strong>Your Spy Identity:</strong><br>
+          <span style="color: #2980b9; font-size: 1.2em;">${firstName} ${lastName}</span><br>
+          <em>Code Name: "${codeName}"</em><br>
+          <small style="color: #666;">Agent ID: IM-${number.toString().padStart(3, "0")}</small>
+        `;
+
+        // Add to terminal log if available
+        const terminalLog = document.getElementById("terminal-log");
+        if (terminalLog) {
+          const logEntry = document.createElement("div");
+          logEntry.className = "log-line info";
+          logEntry.textContent = `🕵️ New identity generated: ${firstName} ${lastName} (${codeName})`;
+          terminalLog.appendChild(logEntry);
+          terminalLog.scrollTop = terminalLog.scrollHeight;
+        }
+      });
+
+      // Paranoia Level Calculator
+      const paranoiaCalculator = document.getElementById("calculate-paranoia");
+      const paranoiaResult = document.getElementById("paranoia-result");
+
+      const paranoiaLevels = [
+        {
+          level: 1,
+          name: "Blissfully Ignorant",
+          color: "#00ff00",
+          desc: "You trust everyone, including that suspiciously friendly cat. Consider a career in customer service.",
+        },
+        {
+          level: 2,
+          name: "Mildly Suspicious",
+          color: "#88ff00",
+          desc: "You occasionally wonder if your toaster is listening. This is normal. Probably.",
+        },
+        {
+          level: 3,
+          name: "Reasonably Cautious",
+          color: "#ffff00",
+          desc: "You check your rearview mirror twice. Smart move. The third time might be excessive though.",
+        },
+        {
+          level: 4,
+          name: "Moderately Paranoid",
+          color: "#ff8800",
+          desc: "You've named your houseplants and suspect they're reporting to someone. They probably are.",
+        },
+        {
+          level: 5,
+          name: "Highly Suspicious",
+          color: "#ff4400",
+          desc: "You're convinced your reflection is plotting against you. It might be. Mirrors are untrustworthy.",
+        },
+        {
+          level: 6,
+          name: "Extremely Paranoid",
+          color: "#ff0000",
+          desc: "You've encrypted your grocery list and communicate only in code. Welcome to the club, agent.",
+        },
+        {
+          level: 7,
+          name: "Maximum Paranoia",
+          color: "#880000",
+          desc: "You don't trust this assessment. Good. You're ready for field work. Or a nice vacation. (But not both.)",
+        },
+      ];
+
+      paranoiaCalculator.addEventListener("click", () => {
+        // Generate "scientific" paranoia score based on random factors
+        const baseScore = Math.random() * 100;
+        const timeOfDay = new Date().getHours();
+        const dayOfWeek = new Date().getDay();
+        const moonPhase = Math.random(); // Because why not?
+
+        // Adjust score based on "factors"
+        let adjustedScore = baseScore;
+        if (timeOfDay >= 22 || timeOfDay <= 6) adjustedScore += 15; // Nighttime = more paranoid
+        if (dayOfWeek === 5) adjustedScore += 10; // Friday the 13th effect (if applicable)
+        adjustedScore += moonPhase * 20; // Full moon = more suspicious
+
+        const level = Math.min(Math.floor(adjustedScore / 15) + 1, 7);
+        const paranoia = paranoiaLevels[level - 1];
+
+        paranoiaResult.style.display = "block";
+        paranoiaResult.style.borderColor = paranoia.color;
+        paranoiaResult.style.borderWidth = "2px";
+        paranoiaResult.innerHTML = `
+          <strong style="color: ${paranoia.color}; font-size: 1.2em;">Paranoia Level ${level}/7: ${paranoia.name}</strong><br>
+          <em>${paranoia.desc}</em><br>
+          <small style="color: #666;">Assessment Score: ${Math.round(adjustedScore)}/100 | 
+          Factors: Time of day (${timeOfDay}:00), Day (${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek]}), 
+          Moon phase (${(moonPhase * 100).toFixed(0)}% suspicious)</small>
+        `;
+
+        // Add to terminal log if available
+        const terminalLog = document.getElementById("terminal-log");
+        if (terminalLog) {
+          const logEntry = document.createElement("div");
+          logEntry.className = level >= 5 ? "log-line warning" : "log-line info";
+          logEntry.textContent = `🔍 Paranoia assessment complete: Level ${level} - ${paranoia.name}`;
+          terminalLog.appendChild(logEntry);
+          terminalLog.scrollTop = terminalLog.scrollHeight;
+        }
+      });
+
+      // Add some spy-themed easter eggs
+      let konamiCode = [];
+      const konamiSequence = [
+        "ArrowUp",
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowLeft",
+        "ArrowRight",
+        "b",
+        "a",
+      ];
+
+      document.addEventListener("keydown", (e) => {
+        konamiCode.push(e.key);
+        if (konamiCode.length > konamiSequence.length) {
+          konamiCode.shift();
+        }
+
+        if (konamiCode.join(",") === konamiSequence.join(",")) {
+          const terminalLog = document.getElementById("terminal-log");
+          if (terminalLog) {
+            const easterEgg = document.createElement("div");
+            easterEgg.className = "log-line danger";
+            easterEgg.textContent =
+              '🚨 CLASSIFIED: You found the secret code! Your clearance level has been upgraded to "Suspiciously Observant".';
+            terminalLog.appendChild(easterEgg);
+            terminalLog.scrollTop = terminalLog.scrollHeight;
+          }
+          konamiCode = [];
+        }
+      });
+
+      // ===== SPY ANIMATION SYSTEM =====
+      class SpyAnimationController {
+        constructor() {
+          this.activePopup = null;
+          this.spyCounter = 0;
+          this.eventCounter = 0;
+          this.recruitmentShown = false;
+          this.init();
+        }
+
+        init() {
+          // Start the spy circus after a short delay
+          setTimeout(() => this.startSpyActivities(), 2000);
+
+          // Schedule the dramatic recruitment after 90 seconds of activity
+          setTimeout(() => this.triggerRecruitmentSequence(), 90000);
+        }
+
+        incrementEventCounter() {
+          this.eventCounter++;
+          // Could also trigger based on event count instead of time
+          // if (this.eventCounter >= 20 && !this.recruitmentShown) {
+          //   this.triggerRecruitmentSequence();
+          // }
+        }
+
+        startSpyActivities() {
+          // Spawn various spy activities at random intervals
+          this.scheduleRandomSpy();
+          this.scheduleMissile();
+          this.scheduleHelicopter();
+          this.scheduleDocumentDrop();
+          this.schedulePeriscope();
+          this.scheduleAsylumSeeker();
+          this.scheduleFileTransfer();
+          this.scheduleGlamorousSpy();
+          this.scheduleFamousSpy();
+        }
+
+        scheduleRandomSpy() {
+          const spawnSpy = () => {
+            this.createWalkingSpy();
+            setTimeout(spawnSpy, Math.random() * 15000 + 10000); // 10-25 seconds
+          };
+          spawnSpy();
+        }
+
+        scheduleMissile() {
+          const launchMissile = () => {
+            this.createMissile();
+            setTimeout(launchMissile, Math.random() * 30000 + 20000); // 20-50 seconds
+          };
+          setTimeout(launchMissile, 5000);
+        }
+
+        scheduleHelicopter() {
+          const flyHelicopter = () => {
+            this.createHelicopter();
+            setTimeout(flyHelicopter, Math.random() * 40000 + 30000); // 30-70 seconds
+          };
+          setTimeout(flyHelicopter, 8000);
+        }
+
+        scheduleDocumentDrop() {
+          const dropDocument = () => {
+            this.createFlyingDocument();
+            setTimeout(dropDocument, Math.random() * 25000 + 15000); // 15-40 seconds
+          };
+          setTimeout(dropDocument, 12000);
+        }
+
+        schedulePeriscope() {
+          const showPeriscope = () => {
+            this.createPeriscope();
+            setTimeout(showPeriscope, Math.random() * 50000 + 40000); // 40-90 seconds
+          };
+          setTimeout(showPeriscope, 20000);
+        }
+
+        scheduleAsylumSeeker() {
+          const seekAsylum = () => {
+            this.createAsylumSeekerPopup();
+            setTimeout(seekAsylum, Math.random() * 45000 + 35000); // 35-80 seconds
+          };
+          setTimeout(seekAsylum, 25000);
+        }
+
+        scheduleFileTransfer() {
+          const transferFile = () => {
+            this.createFileTransferNotification();
+            setTimeout(transferFile, Math.random() * 20000 + 15000); // 15-35 seconds
+          };
+          setTimeout(transferFile, 10000);
+        }
+
+        scheduleGlamorousSpy() {
+          const spawnGlamour = () => {
+            this.createGlamorousSpy();
+            setTimeout(spawnGlamour, Math.random() * 25000 + 20000); // 20-45 seconds
+          };
+          setTimeout(spawnGlamour, 15000);
+        }
+
+        scheduleFamousSpy() {
+          const spawnFamous = () => {
+            this.createFamousSpy();
+            setTimeout(spawnFamous, Math.random() * 35000 + 25000); // 25-60 seconds
+          };
+          setTimeout(spawnFamous, 18000);
+        }
+
+        createWalkingSpy() {
+          const spies = [
+            {
+              emoji: "🕵️",
+              name: "Secret Agent",
+              messages: [
+                "Nothing to see here, just a regular citizen...",
+                "Have you seen a suspicious briefcase? Asking for a friend.",
+                "I'm definitely not following anyone. Why would you think that?",
+                "This trench coat? It's just fashion. Very normal.",
+              ],
+            },
+            {
+              emoji: "🕵️‍♀️",
+              name: "Counter-Agent",
+              messages: [
+                "I'm following the person following you. It's complicated.",
+                "Trust no one. Especially not me. Or yourself.",
+                "Quick! Act natural! Too natural. Less natural. Perfect.",
+                "That spy you just saw? I'm their arch-nemesis. Long story.",
+              ],
+            },
+            {
+              emoji: "🥷",
+              name: "Shadow Operative",
+              messages: [
+                "You weren't supposed to see me. Pretend you didn't.",
+                "I was never here. This conversation never happened.",
+                "Master of stealth. Except for right now, obviously.",
+                "The mission is... actually, I can't tell you. Classified.",
+              ],
+            },
+            {
+              emoji: "👤",
+              name: "Mysterious Figure",
+              messages: [
+                "They're listening. All of them. Even your houseplants.",
+                "The truth is... [transmission interrupted]",
+                "Meet me at the coffee shop. Not that one, the other one. You know which.",
+                "I have information that could compromise everything. Or nothing. Unclear.",
+              ],
+            },
+            {
+              emoji: "🤵",
+              name: "Double Agent",
+              messages: [
+                "I work for three agencies. They all think I only work for them.",
+                "Loyalty is overrated. Have you considered freelancing?",
+                "Which side am I on? Yes.",
+                "I'm playing both sides. That way I always come out on top.",
+              ],
+            },
+          ];
+
+          const spy = spies[Math.floor(Math.random() * spies.length)];
+          const goingRight = Math.random() > 0.5;
+          const speed = Math.random() * 5 + 4; // 4-9 seconds
+
+          const spyEl = document.createElement("div");
+          spyEl.className = "spy-character";
+          spyEl.textContent = spy.emoji;
+          spyEl.style.bottom = Math.random() * 60 + 20 + "%";
+          spyEl.style.animation = `${goingRight ? "spy-walk-right" : "spy-walk-left"} ${speed}s linear`;
+
+          spyEl.onclick = () => {
+            const message = spy.messages[Math.floor(Math.random() * spy.messages.length)];
+            this.showTooltip(spyEl, `${spy.name}: "${message}"`);
+          };
+
+          document.body.appendChild(spyEl);
+          setTimeout(() => spyEl.remove(), speed * 1000);
+        }
+
+        createMissile() {
+          const missileEl = document.createElement("div");
+          missileEl.className = "spy-character";
+          missileEl.textContent = "🚀";
+          missileEl.style.animation = "missile-flight 4s linear";
+
+          // Add missile trail
+          const trail = document.createElement("div");
+          trail.className = "missile-trail";
+          trail.style.animation = "missile-flight 4s linear";
+          trail.style.left = "-70px";
+
+          missileEl.onclick = () => {
+            this.showTooltip(missileEl, 'ICBM-47: "Not to worry, it\'s just a drill. Probably."');
+          };
+
+          document.body.appendChild(trail);
+          document.body.appendChild(missileEl);
+
+          setTimeout(() => {
+            trail.remove();
+            missileEl.remove();
+          }, 4000);
+        }
+
+        createHelicopter() {
+          const heliEl = document.createElement("div");
+          heliEl.className = "spy-character";
+          heliEl.textContent = "🚁";
+          heliEl.style.fontSize = "40px";
+          heliEl.style.animation = "helicopter-fly 8s linear";
+
+          heliEl.onclick = () => {
+            this.showTooltip(
+              heliEl,
+              'Transport Heli: "Extraction available. Price: 1 briefcase full of non-sequential bills."'
+            );
+          };
+
+          document.body.appendChild(heliEl);
+          setTimeout(() => heliEl.remove(), 8000);
+        }
+
+        createFlyingDocument() {
+          const docEl = document.createElement("div");
+          docEl.className = "spy-character";
+          docEl.textContent = "📄";
+          docEl.style.animation = "document-fly 6s ease-in-out";
+
+          docEl.onclick = () => {
+            this.showTooltip(
+              docEl,
+              'Classified Document: "TOP SECRET: The cafeteria will be serving mystery meat on Thursday."'
+            );
+          };
+
+          document.body.appendChild(docEl);
+          setTimeout(() => docEl.remove(), 6000);
+        }
+
+        createPeriscope() {
+          const periscopeEl = document.createElement("div");
+          periscopeEl.className = "spy-character";
+          periscopeEl.textContent = "🔭";
+          periscopeEl.style.fontSize = "35px";
+          periscopeEl.style.left = Math.random() * 80 + 10 + "%";
+          periscopeEl.style.animation = "periscope-peek 5s ease-in-out";
+          periscopeEl.style.transformOrigin = "bottom center";
+
+          periscopeEl.onclick = () => {
+            this.showTooltip(
+              periscopeEl,
+              'Submarine Scout: "Everything looks normal up there. Suspiciously normal."'
+            );
+          };
+
+          document.body.appendChild(periscopeEl);
+          setTimeout(() => periscopeEl.remove(), 5000);
+        }
+
+        createFileTransferNotification() {
+          const operations = [
+            {
+              text: "FILE TRANSFERRED",
+              type: "success",
+              detail: "OPERATION_BLACKBIRD.zip → [REDACTED]",
+            },
+            { text: "ACCESS GRANTED", type: "success", detail: "SECURITY LEVEL: OMEGA CLEARANCE" },
+            { text: "DOWNLOADING...", type: "progress", detail: "target_coordinates.enc" },
+            {
+              text: "FILE DELETED",
+              type: "danger",
+              detail: "evidence_trail.log [PERMANENTLY ERASED]",
+            },
+            { text: "ACCESS DENIED", type: "danger", detail: "INTRUSION DETECTED - TRACING..." },
+            { text: "ENCRYPTION COMPLETE", type: "success", detail: "ALGORITHM: AES-2048-QUANTUM" },
+            { text: "SYSTEM BREACH", type: "danger", detail: "FIREWALL COMPROMISED - ALERT!" },
+            { text: "UPLOAD SUCCESSFUL", type: "success", detail: "virus_payload.exe → MAINFRAME" },
+            { text: "DECRYPTION IN PROGRESS", type: "progress", detail: "vault_access_codes.pgp" },
+            {
+              text: "DATABASE WIPED",
+              type: "danger",
+              detail: "witness_protection_records.db [ERASED]",
+            },
+            {
+              text: "SATELLITE LINK ESTABLISHED",
+              type: "success",
+              detail: "COORDINATES: 51.5074° N, 0.1278° W",
+            },
+            {
+              text: "PASSWORD CRACKED",
+              type: "success",
+              detail: "admin_credentials.txt [123456789]",
+            },
+          ];
+
+          const operation = operations[Math.floor(Math.random() * operations.length)];
+
+          if (operation.type === "progress") {
+            this.showProgressTransfer(operation);
+          } else {
+            this.showFlashNotification(operation);
+          }
+
+          // Random corner notification
+          if (Math.random() > 0.6) {
+            setTimeout(() => {
+              const corner = document.createElement("div");
+              corner.className = "corner-notification";
+              corner.innerHTML = `<strong>SYSTEM LOG:</strong><br>${operation.detail}`;
+              document.body.appendChild(corner);
+              setTimeout(() => corner.remove(), 4000);
+            }, 2000);
+          }
+        }
+
+        showFlashNotification(operation) {
+          const notification = document.createElement("div");
+          notification.className = "file-notification";
+          if (operation.type === "danger") {
+            notification.classList.add("danger");
+          }
+          notification.innerHTML = `
+            ${operation.text}<br>
+            <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">${operation.detail}</div>
+          `;
+
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 2000);
+        }
+
+        showProgressTransfer(operation) {
+          const notification = document.createElement("div");
+          notification.className = "file-notification";
+          notification.innerHTML = `
+            ${operation.text}<br>
+            <div style="font-size: 14px; margin-top: 5px;">${operation.detail}</div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="transfer-progress"></div>
+            </div>
+          `;
+
+          document.body.appendChild(notification);
+
+          const progressBar = document.getElementById("transfer-progress");
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += Math.random() * 15 + 5;
+            if (progress >= 100) {
+              progress = 100;
+              clearInterval(interval);
+              setTimeout(() => notification.remove(), 500);
+            }
+            progressBar.style.width = progress + "%";
+          }, 100);
+        }
+
+        createGlamorousSpy() {
+          const glamSpies = [
+            {
+              emoji: "💃",
+              name: "Mata Hari 2.0",
+              messages: [
+                "Darling, information flows like champagne at a diplomat's party.",
+                "A smile can open more doors than any lockpick, trust me.",
+                "They never suspect someone in Versace. Fashion is the ultimate cover.",
+                "I collected three state secrets and a marriage proposal tonight. Busy evening!",
+              ],
+            },
+            {
+              emoji: "👸",
+              name: "Countess Cipher",
+              messages: [
+                "Royalty is the perfect disguise. Who would suspect a duchess of espionage?",
+                "My tiara contains a listening device. Diamonds ARE a spy's best friend.",
+                "I just charmed the defense minister into revealing his entire strategy. It was rather easy.",
+                "High society gatherings are just intelligence briefings with better wine.",
+              ],
+            },
+            {
+              emoji: "🎭",
+              name: "The Scarlet Shadow",
+              messages: [
+                "Every gala is a mission. Every dance is reconnaissance.",
+                "Beauty is a weapon, darling. And I never miss.",
+                "I've stolen hearts and hard drives. Usually in the same evening.",
+                "The target fell for my cover story. They always do. *winks*",
+              ],
+            },
+            {
+              emoji: "💋",
+              name: "Agent Velvet",
+              messages: [
+                "Lipstick cameras are so last decade. Now I use... well, that's classified.",
+                "Seduction is an art form. I happen to be Picasso.",
+                "He thought it was a date. It was an interrogation. He never knew.",
+                "Red lipstick, black dress, classified documents. A perfect evening!",
+              ],
+            },
+            {
+              emoji: "👗",
+              name: "La Femme Fatale",
+              messages: [
+                "My perfume contains a mild truth serum. Effective and elegant.",
+                "I walked out with the launch codes and his heart. Both are classified now.",
+                "Espionage is like fashion: it's all about timing and presentation.",
+                "That ambassador didn't stand a chance. Neither did his security detail.",
+              ],
+            },
+          ];
+
+          const spy = glamSpies[Math.floor(Math.random() * glamSpies.length)];
+          const goingRight = Math.random() > 0.5;
+          const speed = Math.random() * 4 + 5; // Slower, more elegant
+
+          const spyEl = document.createElement("div");
+          spyEl.className = "spy-character";
+          spyEl.textContent = spy.emoji;
+          spyEl.style.fontSize = "35px";
+          spyEl.style.bottom = Math.random() * 50 + 25 + "%";
+          spyEl.style.animation = `${goingRight ? "spy-walk-right" : "spy-walk-left"} ${speed}s ease-in-out`;
+
+          spyEl.onclick = () => {
+            const message = spy.messages[Math.floor(Math.random() * spy.messages.length)];
+            this.showTooltip(spyEl, `${spy.name}: "${message}"`);
+          };
+
+          document.body.appendChild(spyEl);
+          setTimeout(() => spyEl.remove(), speed * 1000);
+        }
+
+        createFamousSpy() {
+          const legends = [
+            {
+              emoji: "🍸",
+              name: "Agent 007",
+              messages: [
+                "The name's Bond. Well, not really, but I wish.",
+                "Shaken, not stirred. Also, your servers are compromised.",
+                "I have a license to... browse your website. Close enough.",
+                "Martini in one hand, encrypted USB in the other. Multitasking.",
+              ],
+            },
+            {
+              emoji: "🎬",
+              name: "Jason Bourne Identity Crisis",
+              messages: [
+                "Who am I? Why am I here? Did I leave the stove on?",
+                "I don't remember my past, but I do remember your password. It's weak.",
+                "Extreme parkour over rooftops or just take the elevator? Decisions.",
+                "I woke up with three passports and no memory. Typical Tuesday.",
+              ],
+            },
+            {
+              emoji: "🎩",
+              name: "M (The Boss)",
+              messages: [
+                "This mission is classified. So classified, even I don't know about it.",
+                "Your performance review is... classified. Take that however you want.",
+                "The budget for gadgets is unlimited. The budget for coffee is not. Priorities.",
+                "Agent, your mission: survive this webpage without clicking suspicious links.",
+              ],
+            },
+            {
+              emoji: "🔫",
+              name: "Black Widow Wannabe",
+              messages: [
+                "I've got red in my ledger. Also, overdue library books.",
+                "Trained in 47 martial arts. Also proficient in Excel. Very deadly.",
+                "I can take down enemies silently or passive-aggressively via email.",
+                "My cover identity is an accountant. The perfect disguise: boring.",
+              ],
+            },
+            {
+              emoji: "🕴️",
+              name: "Agent Ethan Mission-Possible",
+              messages: [
+                "Your mission, should you choose to accept it: find a good parking spot.",
+                "I hang from helicopters for fun. Also for work. Mostly work.",
+                "Face masks are my specialty. Also useful during flu season.",
+                "This message will self-destruct in 5 seconds. Just kidding, budget cuts.",
+              ],
+            },
+            {
+              emoji: "🧙",
+              name: "Spy Smiley (Definitely Not Le Carré)",
+              messages: [
+                "The circus is watching. By circus, I mean HR. They're always watching.",
+                "In the game of espionage, trust no one. Especially not printers.",
+                "I've run more moles than a dermatologist. Cold War humor.",
+                "Remember: the wilderness of mirrors is just middle management.",
+              ],
+            },
+            {
+              emoji: "💼",
+              name: "Jack Ryan (Analyst Extraordinaire)",
+              messages: [
+                "I'm just an analyst! Why am I in a gunfight? This wasn't in the job description!",
+                "Started as a desk jockey, now I'm dodging bullets. Career progression!",
+                "My Excel skills got me into this. My running skills keep me alive.",
+                "I just wanted to analyze data, not jump out of planes. Recruiters lied.",
+              ],
+            },
+            {
+              emoji: "🎪",
+              name: "Maxwell Smart (Agent 86)",
+              messages: [
+                "Would you believe... I have top secret clearance? No? How about junior clearance?",
+                "Missed it by THAT much! (That's my catchphrase for failed missions)",
+                "Sorry about that, Chief. I accidentally encrypted the wrong files.",
+                "My shoe phone battery died. Now I'm just walking around with regular shoes.",
+              ],
+            },
+          ];
+
+          const legend = legends[Math.floor(Math.random() * legends.length)];
+          const goingRight = Math.random() > 0.5;
+          const speed = Math.random() * 4 + 5;
+
+          const spyEl = document.createElement("div");
+          spyEl.className = "spy-character";
+          spyEl.textContent = legend.emoji;
+          spyEl.style.fontSize = "35px";
+          spyEl.style.bottom = Math.random() * 60 + 20 + "%";
+          spyEl.style.animation = `${goingRight ? "spy-walk-right" : "spy-walk-left"} ${speed}s linear`;
+
+          // Add a sparkle effect for famous spies
+          spyEl.style.filter = "drop-shadow(2px 2px 8px rgba(255, 215, 0, 0.6))";
+
+          spyEl.onclick = () => {
+            const message = legend.messages[Math.floor(Math.random() * legend.messages.length)];
+            this.showTooltip(spyEl, `${legend.name}: "${message}"`);
+
+            // Add to terminal log
+            const terminalLog = document.getElementById("terminal-log");
+            if (terminalLog) {
+              const logEntry = document.createElement("div");
+              logEntry.className = "log-line warning";
+              logEntry.textContent = `⭐ FAMOUS SPY DETECTED: ${legend.name} passing through sector`;
+              terminalLog.appendChild(logEntry);
+              terminalLog.scrollTop = terminalLog.scrollHeight;
+            }
+          };
+
+          document.body.appendChild(spyEl);
+          setTimeout(() => spyEl.remove(), speed * 1000);
+        }
+
+        createAsylumSeekerPopup() {
+          if (this.activePopup) return; // Only one popup at a time
+
+          const scenarios = [
+            {
+              title: "🆘 URGENT: Agent Seeking Asylum",
+              message:
+                "My cover is blown! They know I know they know I know. I need immediate extraction!",
+              buttons: [
+                {
+                  text: "Grant Asylum",
+                  response:
+                    "Thank you! I promise I'm not a triple agent. Or am I? (I'm not. Or...?)",
+                },
+                {
+                  text: "Deny Request",
+                  response:
+                    "Understandable. I'll just... keep running. Tell my pet goldfish I loved him.",
+                },
+                {
+                  text: "Interrogate First",
+                  response: "Smart move! The password is... wait, am I allowed to tell you that?",
+                },
+              ],
+            },
+            {
+              title: "📢 Recruitment Opportunity",
+              message:
+                "We've been watching your browser history. Impressive. Want to join our agency?",
+              buttons: [
+                {
+                  text: "Sign Me Up!",
+                  response:
+                    "Excellent! Training starts Monday at an undisclosed location. Bring your own trench coat.",
+                },
+                {
+                  text: "Not Interested",
+                  response: "That's what a deep-cover agent would say. We'll be in touch.",
+                },
+                {
+                  text: "I'm Already a Spy",
+                  response: "For whom?! Actually, don't answer that. We'll find out eventually.",
+                },
+              ],
+            },
+            {
+              title: "💼 Dead Drop Detected",
+              message:
+                "A mysterious briefcase has appeared near you. It contains either vital intelligence or someone's lunch.",
+              buttons: [
+                {
+                  text: "Open Briefcase",
+                  response:
+                    'Inside: A sandwich, three paperclips, and a note saying "Wrong briefcase, sorry."',
+                },
+                {
+                  text: "Leave It",
+                  response: "Probably wise. That sandwich looked suspicious anyway.",
+                },
+                {
+                  text: "Call Bomb Squad",
+                  response: "They arrived and ate the sandwich. Crisis averted?",
+                },
+              ],
+            },
+            {
+              title: "🎯 Mission Assignment",
+              message:
+                "Your mission, should you choose to accept it: Find the hidden easter egg on this page.",
+              buttons: [
+                {
+                  text: "Accept Mission",
+                  response:
+                    "Try the Konami Code: ↑↑↓↓←→←→BA. This message will self-destruct. (It won't.)",
+                },
+                {
+                  text: "Decline Mission",
+                  response: "Coward! I respect that. Survival is an underrated skill in espionage.",
+                },
+                {
+                  text: "I Found It!",
+                  response:
+                    "Excellent work, agent! Your reward: This congratulatory message. Budget cuts, you understand.",
+                },
+              ],
+            },
+            {
+              title: "⚠️ Warning: Surveillance Detected",
+              message:
+                "Your webcam just blinked at me. I think it's compromised. Or sentient. Both equally concerning.",
+              buttons: [
+                {
+                  text: "Cover Webcam",
+                  response: "Good instinct! Now it can only hear you. Consider whispering.",
+                },
+                {
+                  text: "Wave at Camera",
+                  response: "Bold move! They waved back. This is awkward.",
+                },
+                {
+                  text: "Unplug Everything",
+                  response: "Wise, but extreme. How are you reading this now? Are you a wizard?",
+                },
+              ],
+            },
+          ];
+
+          const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+          const popup = document.createElement("div");
+          popup.className = "spy-popup";
+          popup.style.top = Math.random() * 40 + 20 + "%";
+          popup.style.left = Math.random() * 40 + 30 + "%";
+
+          const closeBtn = document.createElement("button");
+          closeBtn.className = "spy-popup-close";
+          closeBtn.textContent = "×";
+          closeBtn.onclick = () => {
+            popup.remove();
+            this.activePopup = null;
+          };
+
+          const title = document.createElement("h4");
+          title.textContent = scenario.title;
+          title.style.margin = "0 0 10px 0";
+          title.style.color = "#e74c3c";
+          title.style.animation = "urgent-blink 1.5s infinite";
+
+          const message = document.createElement("p");
+          message.textContent = scenario.message;
+          message.style.marginBottom = "15px";
+          message.style.lineHeight = "1.5";
+
+          const buttonContainer = document.createElement("div");
+          buttonContainer.style.display = "flex";
+          buttonContainer.style.flexDirection = "column";
+          buttonContainer.style.gap = "8px";
+
+          scenario.buttons.forEach((btn) => {
+            const button = document.createElement("button");
+            button.textContent = btn.text;
+            button.style.width = "100%";
+            button.style.padding = "8px";
+            button.style.background = "#3498db";
+            button.style.border = "none";
+            button.style.borderRadius = "5px";
+            button.style.color = "white";
+            button.style.cursor = "pointer";
+            button.style.fontSize = "14px";
+
+            button.onmouseover = () => (button.style.background = "#2980b9");
+            button.onmouseout = () => (button.style.background = "#3498db");
+
+            button.onclick = () => {
+              message.textContent = btn.response;
+              buttonContainer.remove();
+              title.style.animation = "none";
+
+              const okBtn = document.createElement("button");
+              okBtn.textContent = "✓ Acknowledged";
+              okBtn.style.width = "100%";
+              okBtn.style.padding = "8px";
+              okBtn.style.background = "#27ae60";
+              okBtn.style.border = "none";
+              okBtn.style.borderRadius = "5px";
+              okBtn.style.color = "white";
+              okBtn.style.cursor = "pointer";
+              okBtn.style.marginTop = "10px";
+              okBtn.onclick = () => {
+                popup.remove();
+                this.activePopup = null;
+              };
+              popup.appendChild(okBtn);
+            };
+
+            buttonContainer.appendChild(button);
+          });
+
+          popup.appendChild(closeBtn);
+          popup.appendChild(title);
+          popup.appendChild(message);
+          popup.appendChild(buttonContainer);
+
+          document.body.appendChild(popup);
+          this.activePopup = popup;
+
+          // Auto-close after 30 seconds if not interacted with
+          setTimeout(() => {
+            if (popup.parentElement) {
+              popup.remove();
+              this.activePopup = null;
+            }
+          }, 30000);
+        }
+
+        showTooltip(element, text) {
+          const tooltip = document.createElement("div");
+          tooltip.style.position = "fixed";
+          tooltip.style.background = "rgba(0, 0, 0, 0.9)";
+          tooltip.style.color = "#00ff00";
+          tooltip.style.padding = "8px 12px";
+          tooltip.style.borderRadius = "5px";
+          tooltip.style.fontSize = "14px";
+          tooltip.style.zIndex = "10001";
+          tooltip.style.maxWidth = "250px";
+          tooltip.style.fontFamily = "monospace";
+          tooltip.style.border = "1px solid #00ff00";
+          tooltip.textContent = text;
+
+          const rect = element.getBoundingClientRect();
+          tooltip.style.left = rect.left + rect.width / 2 + "px";
+          tooltip.style.top = rect.top - 10 + "px";
+          tooltip.style.transform = "translate(-50%, -100%)";
+
+          document.body.appendChild(tooltip);
+
+          setTimeout(() => tooltip.remove(), 3000);
+        }
+
+        triggerRecruitmentSequence() {
+          if (this.recruitmentShown) return;
+          this.recruitmentShown = true;
+
+          // Create blackout overlay
+          const blackout = document.createElement("div");
+          blackout.className = "blackout-overlay";
+          blackout.id = "recruitment-blackout";
+
+          // Create recruitment message
+          const messageContainer = document.createElement("div");
+          messageContainer.className = "recruitment-message";
+
+          // Randomly select one of several recruitment scenarios
+          const scenarios = [
+            {
+              title: "OPERATION COMPROMISED",
+              message: `We've been watching you. Monitoring your digital footprint. Recording your interactions.
+
+              You reached out to us. That was... unwise. Or perhaps exactly what we wanted.`,
+              evidence: `📹 VIDEO EVIDENCE ACQUIRED<br>
+              Location: [YOUR LOCATION]<br>
+              Time: ${new Date().toLocaleString()}<br>
+              Activity: Receipt of classified materials<br>
+              Value: <span style="color: #00ff00; font-size: 24px;">$50,000</span> in non-sequential bills<br>
+              <br>
+              <span style="color: #ff0000;">⚠️ FOOTAGE HAS BEEN SECURED IN MULTIPLE LOCATIONS</span>`,
+              question: "We have what we need. The question is: Are you IN or OUT?",
+            },
+            {
+              title: "ASSET ACQUISITION PROTOCOL",
+              message: `Congratulations. You've triggered our recruitment algorithm.
+
+              Your browsing patterns, decision-making speed, and curiosity levels indicate... potential.`,
+              evidence: `📊 EVIDENCE FILE #${Math.floor(Math.random() * 9999)
+                .toString()
+                .padStart(4, "0")}<br>
+              Subject: YOU<br>
+              Date: ${new Date().toLocaleDateString()}<br>
+              Incident: Acceptance of digital package<br>
+              Contents: Encrypted intelligence (alleged value: <span style="color: #00ff00;">₿2.5</span>)<br>
+              <br>
+              <span style="color: #ff0000;">⚠️ BLOCKCHAIN RECORDS ARE PERMANENT</span>`,
+              question:
+                "Your fingerprints are all over this. Work with us, or we release the footage. Your choice.",
+            },
+            {
+              title: "RECRUITMENT NOTICE: FINAL",
+              message: `You thought this was a game. It isn't.
+
+              Three minutes ago, you accepted a data transfer from our servers. Congratulations—you're now an accomplice.`,
+              evidence: `🎥 KOMPROMAT SECURED<br>
+              Camera Angle: Security Feed 7-A<br>
+              Timestamp: ${new Date().toLocaleTimeString()}<br>
+              Event: Exchange of "materials"<br>
+              Estimated Value: <span style="color: #00ff00;">£35,000</span><br>
+              Witness Count: 4 (including one LEO)<br>
+              <br>
+              <span style="color: #ff0000;">⚠️ COPIES DISTRIBUTED TO FAILSAFE LOCATIONS</span>`,
+              question:
+                "We own you now. But we're reasonable. Join us voluntarily and this disappears. Refuse... well.",
+            },
+            {
+              title: "LEVEL 7 CLEARANCE REQUIRED",
+              message: `Your presence here was not accidental. We sent you the link. You clicked it. You're already in.
+
+              Every interaction on this site has been recorded. Analyzed. Weaponized.`,
+              evidence: `💼 COMPROMISING MATERIAL ARCHIVED<br>
+              File: dead_drop_confirmation.mp4<br>
+              Date/Time: ${new Date().toLocaleString()}<br>
+              Scene: You accepting an envelope<br>
+              Envelope Contents: <span style="color: #00ff00;">$75,000</span> + USB drive (classified)<br>
+              Location Metadata: AVAILABLE<br>
+              <br>
+              <span style="color: #ff0000;">⚠️ AUTO-RELEASES IN 72 HOURS IF NO RESPONSE</span>`,
+              question: "We don't make offers twice. Are you one of us, or are you a liability?",
+            },
+          ];
+
+          const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+          messageContainer.innerHTML = `
+            <h2>${scenario.title}</h2>
+            <p>${scenario.message.replace(/\n/g, "<br><br>")}</p>
+
+            <div class="evidence-frame">
+              ${scenario.evidence}
+            </div>
+
+            <p style="font-size: 20px; color: #ffff00; font-weight: bold;">
+              ${scenario.question}
+            </p>
+
+            <div class="recruitment-buttons">
+              <button class="recruitment-btn accept" id="btn-accept">
+                ✓ I'm In
+              </button>
+              <button class="recruitment-btn negotiate" id="btn-negotiate">
+                ⚖️ Negotiate
+              </button>
+              <button class="recruitment-btn decline" id="btn-decline">
+                ✗ Refuse
+              </button>
+            </div>
+          `;
+
+          blackout.appendChild(messageContainer);
+          document.body.appendChild(blackout);
+
+          // Add button handlers
+          setTimeout(() => {
+            document.getElementById("btn-accept").onclick = () =>
+              this.handleRecruitmentResponse("accept", blackout);
+            document.getElementById("btn-negotiate").onclick = () =>
+              this.handleRecruitmentResponse("negotiate", blackout);
+            document.getElementById("btn-decline").onclick = () =>
+              this.handleRecruitmentResponse("decline", blackout);
+          }, 100);
+        }
+
+        handleRecruitmentResponse(choice, blackout) {
+          const messageContainer = blackout.querySelector(".recruitment-message");
+
+          const responses = {
+            accept: {
+              title: "WELCOME TO THE FOLD",
+              message: `Excellent decision. Your handler will contact you within 48 hours.
+
+              Check your email. Use the code phrase: <span style="color: #00ff00;">"The mirror has two faces"</span>
+
+              Trust no one. Not even us. Especially not us.
+
+              <br><br>
+              <span style="font-size: 14px; opacity: 0.7;">
+              (Just kidding. This is still a game demo. But you should totally sign up for our mailing list above.
+              We promise only 87% of it is propaganda.)
+              </span>`,
+              color: "#00ff00",
+            },
+            negotiate: {
+              title: "COUNTER-OFFER RECEIVED",
+              message: `Interesting. You want to play games with us?
+
+              Fine. Here's our counter-offer: You join willingly, or the footage goes live in 72 hours.
+
+              That's not a negotiation. That's a countdown.
+
+              <br><br>
+              <span style="font-size: 14px; opacity: 0.7;">
+              (Okay, okay, we're being dramatic. There's no footage. But there IS a cool spy game coming.
+              Sign up above to know when it launches!)
+              </span>`,
+              color: "#ffff00",
+            },
+            decline: {
+              title: "UNWISE CHOICE",
+              message: `You refuse? Brave. Stupid, but brave.
+
+              The footage releases in 72 hours. Your reputation, your career, your freedom—all gone.
+
+              Unless... you reconsider. You know where to find us.
+
+              <br><br>
+              <span style="font-size: 14px; opacity: 0.7;">
+              (Relax! We're just having fun with spy movie tropes. No actual blackmail here.
+              But seriously, join our mailing list above—we've got a legitimately cool AI spy game in development!)
+              </span>`,
+              color: "#ff0000",
+            },
+          };
+
+          const response = responses[choice];
+
+          messageContainer.innerHTML = `
+            <h2 style="color: ${response.color}; animation: none;">${response.title}</h2>
+            <p style="font-size: 18px; line-height: 1.8;">
+              ${response.message}
+            </p>
+            <div style="margin-top: 40px;">
+              <button class="recruitment-btn accept" id="btn-close" style="background: #333; border-color: #666; color: #fff;">
+                RETURN TO OPERATIONS
+              </button>
+            </div>
+          `;
+
+          setTimeout(() => {
+            document.getElementById("btn-close").onclick = () => {
+              blackout.style.animation = "blackout-fade 2s ease-out reverse";
+              setTimeout(() => blackout.remove(), 2000);
+
+              // Log to terminal
+              const terminalLog = document.getElementById("terminal-log");
+              if (terminalLog) {
+                const logEntry = document.createElement("div");
+                logEntry.className = "log-line danger";
+                logEntry.textContent = `🎭 RECRUITMENT SEQUENCE COMPLETE: Choice = ${choice.toUpperCase()}`;
+                terminalLog.appendChild(logEntry);
+                terminalLog.scrollTop = terminalLog.scrollHeight;
+              }
+            };
+          }, 100);
+        }
+      }
+
+      // Initialize the spy animation system
+      const spyController = new SpyAnimationController();
+    </script>
+    <script src="game-demo.js"></script>
+  </body>
+</html>

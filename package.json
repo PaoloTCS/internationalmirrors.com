@@ -1,26 +1,25 @@
 {
   "name": "internationalmirrors",
   "version": "1.0.0",
-  "description": "International Mirrors - Spy Simulation Game",
+  "description": "International Mirrors research site for integrity in societies of AI agents",
   "scripts": {
     "dev": "live-server --port=8080 --open=/index.html",
-    "build": "npm run minify:css && npm run minify:html",
-    "minify:css": "mkdir -p dist && cleancss -o dist/styles.min.css src/styles.css",
-    "minify:html": "html-minifier --collapse-whitespace --remove-comments --minify-css --minify-js -o dist/index.html index.html",
+    "build": "node scripts/build.mjs",
     "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
-    "lint:html": "htmlhint *.html",
+    "format:check": "prettier --check \"**/*.{html,css,js,json,md}\"",
+    "lint:html": "htmlhint index.html archive/index.html notes/*.html",
     "lint:css": "stylelint \"**/*.css\"",
-    "deploy": "gh-pages -d ."
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/PaoloTCS/internationalmirrors.com.git"
   },
   "keywords": [
-    "spy",
-    "game",
-    "simulation",
-    "espionage"
+    "ai-agents",
+    "integrity",
+    "multi-agent-systems",
+    "research"
   ],
   "author": "Paolo Pignatelli",
   "license": "MIT",

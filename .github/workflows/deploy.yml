@@ -31,10 +31,13 @@ jobs:
         run: npm ci || npm install
 
       - name: Format check
-        run: npm run format -- --check || true
+        run: npm run format:check || true
 
       - name: Lint HTML
         run: npm run lint:html || true
+
+      - name: Build site
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -42,7 +45,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'dist'
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,20 +1,23 @@
 # International Mirrors
 
-A spy-themed simulation game website featuring AI-generated espionage scenarios.
+A research site for integrity, inheritance, provenance, and containment in experimental societies of AI agents.
 
 ## 🚀 Live Site
 
 [https://internationalmirrors.com](https://internationalmirrors.com)
 
-## 📋 Features
+## Research focus
 
-- Spy recruitment simulation
-- AI-generated espionage scenarios
-- Humor-filled spy training materials
-- Email subscription form
-- Privacy policy and supporting pages
+- Stigmergic propagation through persistent artifacts and modified environments
+- Provenance and causal attribution across agent–artifact lineages
+- Latent composition and integrity across transformation
+- Sealed-simulation evaluation and containment
+- Public FIL/SARAI framing without disclosing proprietary or unfiled mechanisms
+- Dated research notes, beginning with SwarmWorld (29 August 2026)
 
-## 🛠️ Development Setup
+The former spy-simulation site is preserved at `archive/spy-simulation/`.
+
+## Development setup
 
 ### Prerequisites
 
@@ -51,37 +54,37 @@ npm run build
 npm run deploy
 ```
 
-## 📁 Project Structure
+## Project structure
 
 ```
 internationalmirrors/
-├── index.html                    # Main landing page
-├── recruitment-techniques.html   # Recruitment guide
-├── unfriendly-interrogation.html # Interrogation survival guide
-├── privacy-policy.html          # Privacy policy
-├── OLD_Index.html               # Backup of old version
-├── CNAME                        # Custom domain configuration
-├── package.json                 # Project dependencies
-└── README.md                    # This file
+├── index.html                         # Research-first landing page
+├── styles.css                         # Shared visual system
+├── notes/                             # Dated research notes
+├── archive/
+│   └── spy-simulation/                # Preserved former site
+├── scripts/build.mjs                  # Static production build
+├── CNAME                              # Custom domain
+└── .github/workflows/deploy.yml       # GitHub Pages deployment
 ```
 
-## 🔧 Tech Stack
+## Tech stack
 
-- Pure HTML/CSS/JavaScript (no framework)
+- Pure semantic HTML and CSS (no framework)
 - Live Server for development
 - Prettier for code formatting
 - HTMLHint & Stylelint for linting
 - GitHub Pages for hosting
 
-## 🚀 Deployment
+## Deployment
 
-The site is automatically deployed to GitHub Pages. To deploy manually:
+The site is built into `dist/` and automatically deployed to GitHub Pages when changes reach `main`.
 
 ```bash
 npm run deploy
 ```
 
-Or push to the `main` branch, which will trigger GitHub Pages deployment.
+Production deployment requires push access to `PaoloTCS/internationalmirrors.com`; do not push this redesign until the cutover is approved.
 
 ## 📝 License
 
@@ -90,7 +93,3 @@ MIT
 ## 👤 Author
 
 Paolo Pignatelli
-
----
-
-_Remember: In the world of espionage, the only thing certain is uncertainty. And taxes._
