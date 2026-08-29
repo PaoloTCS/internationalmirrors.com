@@ -7,7 +7,7 @@
     "build": "node scripts/build.mjs",
     "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
     "format:check": "prettier --check \"**/*.{html,css,js,json,md}\"",
-    "lint:html": "htmlhint index.html archive/index.html notes/*.html",
+    "lint:html": "htmlhint index.html archive/index.html notes/*.html research/*.html protocols/*.html responses/*.html results/*.html",
     "lint:css": "stylelint \"**/*.css\"",
     "deploy": "npm run build && gh-pages -d dist"
   },
