@@ -1,0 +1,7 @@
+# Historical artifacts are preserved verbatim.
+archive/spy-simulation/
+game-engine/responses/
+
+# Generated and installed content.
+dist/
+node_modules/
