@@ -8,6 +8,8 @@ const entries = [
   "index.html",
   "styles.css",
   "CNAME",
+  "robots.txt",
+  "sitemap.xml",
   "research",
   "protocols",
   "responses",

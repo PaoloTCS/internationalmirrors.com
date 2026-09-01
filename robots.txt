@@ -1,0 +1,8 @@
+# International Mirrors public research site.
+# Historical material under /archive is preserved but is not for discovery.
+
+User-agent: *
+Allow: /
+Disallow: /archive
+
+Sitemap: https://internationalmirrors.com/sitemap.xml
