@@ -1,9 +1,10 @@
 import { readdir, readFile, stat } from "node:fs/promises";
-import { dirname, extname, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { extname, join, relative, resolve, sep } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const dist = resolve(root, "dist");
+const SITE_ORIGIN = "https://internal-link-check.invalid";
 
 const URL_ATTRIBUTES = new Set(["action", "cite", "data", "formaction", "href", "poster", "src"]);
 const SRCSET_ATTRIBUTES = new Set(["srcset"]);
@@ -15,6 +16,7 @@ const STYLE_URL_PATTERN = /url\(\s*(?:"([^"]+)"|'([^']+)'|([^)"']+))\s*\)/gi;
 const ID_PATTERN = /(?:^|\s)id\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
 const ANCHOR_NAME_PATTERN = /<(?:a|area)\b[^>]*\sname\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
 const BASE_HREF_PATTERN = /<base\b[^>]*\shref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
+const BASE_TAG_PATTERN = /<base\b[^>]*>/gi;
 
 const ENTITY_MAP = {
   amp: "&",
@@ -54,15 +56,6 @@ function decodeEntities(value) {
     }
     return ENTITY_MAP[lower] ?? match;
   });
-}
-
-function decodeHref(value) {
-  const decoded = decodeEntities(value.trim());
-  try {
-    return decodeURI(decoded);
-  } catch {
-    return decoded;
-  }
 }
 
 function decodeFragment(value) {
@@ -113,31 +106,13 @@ function maskIgnoredRegions(html) {
     });
 }
 
-function hasNonLocalScheme(href) {
-  const trimmed = href.trim();
-  if (trimmed.startsWith("//")) {
-    return true;
-  }
-  const match = trimmed.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/);
-  return Boolean(match);
-}
-
-function splitReference(href) {
-  const trimmed = href.trim();
-  let pathAndQuery = trimmed;
-  let fragment = null;
-  const hashIndex = trimmed.indexOf("#");
-  if (hashIndex !== -1) {
-    fragment = trimmed.slice(hashIndex + 1);
-    pathAndQuery = trimmed.slice(0, hashIndex);
-  }
-  const queryIndex = pathAndQuery.indexOf("?");
-  const path = queryIndex === -1 ? pathAndQuery : pathAndQuery.slice(0, queryIndex);
-  return { path, fragment };
-}
-
 function firstCapture(match) {
   return match[1] ?? match[2] ?? match[3] ?? "";
+}
+
+function extractBaseHref(html) {
+  const match = html.match(BASE_HREF_PATTERN);
+  return match ? decodeEntities(firstCapture(match).trim()) : "";
 }
 
 function extractAttributeReferences(html) {
@@ -222,23 +197,79 @@ function inventorySet(paths) {
   return new Set(paths.map((abs) => posixFromDist(abs)));
 }
 
-function resolveLocalTarget(pageFile, hrefPath, baseHref) {
-  const decodedPath = decodeHref(hrefPath);
-  const fromDir = dirname(pageFile);
-  let candidate;
+function documentUrlFor(pageFile) {
+  const rel = posixFromDist(pageFile);
+  const pathname = rel === "." ? "/" : `/${rel}`;
+  return new URL(pathname, SITE_ORIGIN);
+}
 
-  if (decodedPath === "") {
-    candidate = pageFile;
-  } else if (decodedPath.startsWith("/")) {
-    candidate = resolve(dist, `.${decodedPath}`);
-  } else if (baseHref) {
-    const baseDir = baseHref.endsWith("/") ? baseHref : dirname(baseHref) + "/";
-    candidate = resolve(fromDir, baseDir, decodedPath);
-  } else {
-    candidate = resolve(fromDir, decodedPath);
+function mapPathnameToDist(pathname) {
+  let decoded;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    decoded = pathname;
+  }
+  const relativePath = decoded.replace(/^\/+/, "");
+  const candidate = relativePath === "" ? dist : resolve(dist, relativePath);
+  if (!isInsideDist(candidate)) {
+    return { ok: false, reason: "escapes dist/", target: posixFromRepo(candidate) };
+  }
+  return { ok: true, filePath: candidate };
+}
+
+/**
+ * Resolve an href against the page URL and optional local <base href> using
+ * browser URL semantics, then map the pathname into dist/.
+ *
+ * External hrefs and genuinely external base URLs are skipped. Root-relative
+ * bases such as "/" and "/research/" are same-origin site paths, not filesystem
+ * roots.
+ */
+function resolveLocalTarget(pageFile, href, baseHref = "") {
+  const trimmedHref = decodeEntities(href.trim());
+  if (trimmedHref === "") {
+    return { type: "skip", reason: "empty" };
   }
 
-  return candidate;
+  const documentUrl = documentUrlFor(pageFile);
+  const siteOrigin = new URL(SITE_ORIGIN).origin;
+  let baseUrl = documentUrl;
+
+  if (baseHref) {
+    try {
+      baseUrl = new URL(decodeEntities(baseHref.trim()), documentUrl);
+    } catch {
+      return { type: "error", reason: "invalid base URL", target: baseHref };
+    }
+  }
+
+  if (baseUrl.origin !== siteOrigin) {
+    return { type: "skip", reason: "external-base" };
+  }
+
+  let resolved;
+  try {
+    resolved = new URL(trimmedHref, baseUrl);
+  } catch {
+    return { type: "error", reason: "invalid URL", target: trimmedHref };
+  }
+
+  if (resolved.origin !== siteOrigin) {
+    return { type: "skip", reason: "external" };
+  }
+
+  const mapped = mapPathnameToDist(resolved.pathname);
+  if (!mapped.ok) {
+    return { type: "error", reason: mapped.reason, target: mapped.target };
+  }
+
+  const hash = resolved.hash.startsWith("#") ? resolved.hash.slice(1) : resolved.hash;
+  return {
+    type: "ok",
+    filePath: mapped.filePath,
+    fragment: hash === "" ? null : decodeFragment(hash),
+  };
 }
 
 function classifyTarget(absPath, files, directories) {
@@ -313,33 +344,34 @@ async function main() {
     const source = await readFile(page, "utf8");
     const masked = maskIgnoredRegions(source);
     idCache.set(page, extractIds(masked));
-    const baseMatch = BASE_HREF_PATTERN.exec(masked);
-    const baseHref = baseMatch ? decodeHref(firstCapture(baseMatch)) : "";
-    const localBase = baseHref && !hasNonLocalScheme(baseHref) ? baseHref : "";
+    const baseHref = extractBaseHref(masked);
+    const forLinks = masked.replace(BASE_TAG_PATTERN, maskKeepNewlines);
 
-    for (const reference of extractAttributeReferences(masked)) {
+    for (const reference of extractAttributeReferences(forLinks)) {
       const raw = reference.value.trim();
-      if (raw === "") {
-        skipped += 1;
-        continue;
-      }
-      if (hasNonLocalScheme(raw) || (localBase === "" && hasNonLocalScheme(baseHref))) {
+      const resolved = resolveLocalTarget(page, raw, baseHref);
+      const location = `${posixFromRepo(page)}:${lineNumberAt(source, reference.index)}`;
+
+      if (resolved.type === "skip") {
         skipped += 1;
         continue;
       }
 
       checked += 1;
-      const { path, fragment } = splitReference(raw);
-      const resolved = resolveLocalTarget(page, path, localBase);
-      const found = classifyTarget(resolved, files, directories);
-      const location = `${posixFromRepo(page)}:${lineNumberAt(source, reference.index)}`;
+      if (resolved.type === "error") {
+        errors.push(
+          `${location}  ${reference.attr}="${raw}"\n  ${resolved.reason}: ${resolved.target}`
+        );
+        continue;
+      }
 
+      const found = classifyTarget(resolved.filePath, files, directories);
       if (!found.ok) {
         errors.push(`${location}  ${reference.attr}="${raw}"\n  ${found.reason}: ${found.target}`);
         continue;
       }
 
-      if (fragment === null || fragment === "") {
+      if (resolved.fragment === null || resolved.fragment === "") {
         continue;
       }
       if (!isHtmlFile(found.target)) {
@@ -350,10 +382,9 @@ async function main() {
       }
 
       const ids = await idsFor(found.target);
-      const decodedFragment = decodeFragment(fragment);
-      if (!ids.has(decodedFragment)) {
+      if (!ids.has(resolved.fragment)) {
         errors.push(
-          `${location}  ${reference.attr}="${raw}"\n  missing fragment #${decodedFragment} in ${posixFromRepo(found.target)}`
+          `${location}  ${reference.attr}="${raw}"\n  missing fragment #${resolved.fragment} in ${posixFromRepo(found.target)}`
         );
       }
     }
@@ -374,9 +405,16 @@ async function main() {
   );
 }
 
-try {
-  await main();
-} catch (error) {
-  console.error(error instanceof Error ? error.stack : String(error));
-  process.exitCode = 1;
+const isDirectRun =
+  Boolean(process.argv[1]) && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
+
+if (isDirectRun) {
+  try {
+    await main();
+  } catch (error) {
+    console.error(error instanceof Error ? error.stack : String(error));
+    process.exitCode = 1;
+  }
 }
+
+export { dist, resolveLocalTarget, SITE_ORIGIN };
