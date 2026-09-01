@@ -63,6 +63,7 @@ button:focus-visible {
 .site-header {
   width: var(--page);
   margin: 0 auto;
+  min-width: 0;
   min-height: 92px;
   display: flex;
   align-items: center;
@@ -74,6 +75,7 @@ button:focus-visible {
 .wordmark {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 12px;
   text-decoration: none;
   font-size: 15px;
@@ -114,11 +116,15 @@ button:focus-visible {
   width: var(--page);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(390px, 0.92fr);
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   gap: clamp(52px, 8vw, 112px);
   align-items: center;
   min-height: 690px;
   padding: 76px 0 88px;
+}
+
+.hero > * {
+  min-width: 0;
 }
 
 .eyebrow,
@@ -153,6 +159,11 @@ h2 {
   font-weight: 500;
   letter-spacing: -0.045em;
   line-height: 0.98;
+  overflow-wrap: break-word;
+}
+
+h3 {
+  overflow-wrap: break-word;
 }
 
 h1 {
@@ -179,6 +190,7 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
   min-height: 46px;
   padding: 0 18px;
   border: 1px solid var(--ink);
@@ -208,6 +220,8 @@ h1 {
 
 .system-map {
   position: relative;
+  min-width: 0;
+  margin-right: 32px;
   padding: 16px;
   border: 1px solid var(--ink);
   background-color: var(--paper-deep);
@@ -220,7 +234,9 @@ h1 {
 
 .map-caption {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: 8px 16px;
   margin-bottom: 26px;
 }
 
@@ -287,11 +303,12 @@ h1 {
 
 .integrity-gate {
   position: absolute;
-  right: -22px;
+  right: 0;
   bottom: 52px;
   min-height: 62px;
+  max-width: calc(100% - 12px);
   background: var(--signal);
-  transform: translateX(36%);
+  transform: translateX(32px);
 }
 
 .pulse {
@@ -462,6 +479,7 @@ h1 {
 }
 
 .equation > div {
+  min-width: 0;
   min-height: 132px;
   padding: 20px 10px;
   display: grid;
@@ -753,6 +771,7 @@ footer {
   width: var(--page);
   margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 20px;
   padding: 28px 0 42px;
@@ -799,10 +818,15 @@ footer a {
 
 .article-body {
   display: grid;
-  grid-template-columns: minmax(150px, 0.32fr) minmax(0, 0.68fr);
+  grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr);
   gap: 70px;
   max-width: 980px;
   padding-top: 64px;
+}
+
+.article-toc,
+.article-content {
+  min-width: 0;
 }
 
 .article-toc {
@@ -879,8 +903,10 @@ footer a {
 
 .comparison {
   width: 100%;
+  max-width: 100%;
   margin: 30px 0;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .comparison th,
@@ -889,6 +915,7 @@ footer a {
   border-top: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
+  overflow-wrap: break-word;
 }
 
 .comparison th {
@@ -934,7 +961,7 @@ footer a {
     padding: 24px 0;
   }
 
-  nav {
+  .site-header nav {
     gap: 12px 18px;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -965,11 +992,6 @@ footer a {
 
   .system-map {
     max-width: 620px;
-  }
-
-  .integrity-gate {
-    right: 0;
-    transform: translateX(12px);
   }
 
   .thesis {
@@ -1003,6 +1025,19 @@ footer a {
   .article-toc {
     position: static;
   }
+
+  .equation {
+    grid-template-columns: 1fr;
+  }
+
+  .equation > div {
+    min-height: 96px;
+  }
+
+  .equation i {
+    transform: rotate(90deg);
+    text-align: center;
+  }
 }
 
 @media (width <= 600px) {
@@ -1014,7 +1049,7 @@ footer a {
     display: block;
   }
 
-  nav {
+  .site-header nav {
     margin-top: 20px;
     justify-content: flex-start;
   }
@@ -1028,9 +1063,14 @@ footer a {
     font-size: clamp(47px, 14.5vw, 64px);
   }
 
+  .system-map {
+    margin-right: 0;
+  }
+
   .integrity-gate {
     position: static;
     margin-top: 14px;
+    max-width: none;
     transform: none;
   }
 
@@ -1051,19 +1091,6 @@ footer a {
   .note-feature {
     padding-top: 68px;
     padding-bottom: 70px;
-  }
-
-  .equation {
-    grid-template-columns: 1fr;
-  }
-
-  .equation > div {
-    min-height: 96px;
-  }
-
-  .equation i {
-    transform: rotate(90deg);
-    text-align: center;
   }
 
   .framing-question {

@@ -8,6 +8,7 @@
     "check:links": "node scripts/check-internal-links.mjs",
     "check:metadata": "node scripts/check-page-metadata.mjs",
     "check:a11y": "node scripts/check-accessibility.mjs",
+    "check:layout": "node scripts/check-layout.mjs",
     "format": "prettier --write \"**/*.{html,css,js,mjs,json,md}\"",
     "format:check": "prettier --check \"**/*.{html,css,js,mjs,json,md}\"",
     "lint:html": "htmlhint index.html archive/index.html notes/*.html research/*.html protocols/*.html responses/*.html results/*.html",
