@@ -1,8 +1,8 @@
 # International Mirrors public research site.
-# Historical material under /archive is preserved but is not for discovery.
+# Archive URLs are omitted from the sitemap. They remain crawlable so
+# page-level noindex on built archive HTML can be observed.
 
 User-agent: *
 Allow: /
-Disallow: /archive
 
 Sitemap: https://internationalmirrors.com/sitemap.xml
