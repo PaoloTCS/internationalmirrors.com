@@ -93,12 +93,13 @@ Hidden (revealed post-game):
 
 ### 1. Prime of Primes (Mathematical Location System)
 
-**Purpose:** Encode game states, decisions, and intent hierarchies as unique prime numbers
+**Purpose:** Encode game states, decisions, and intent hierarchies as unique integer codes: products of prime powers, one prime per field
+<!-- audit:B1 repaired -->
 
 **How It Works:**
 
 ```python
-# Each decision gets a unique prime location
+# Each decision gets a unique integer location code (a product of prime powers)
 location = encode_prime(
     game_id=12,
     turn=47,
@@ -106,21 +107,36 @@ location = encode_prime(
     action_type="surveillance",
     target="agent_x"
 )
-# Returns: 2^3 × 3^5 × 5^47 × 7^11 × 13^9 × ...
+# Fixed field-to-prime map: game_id -> 2, turn -> 3, player -> 5,
+# action_type -> 7, target -> 11.
+# Exponent = field value + 1. Categorical fields use their index in a fixed
+# list: player "claude" = 0, action_type SURVEIL = 0, agent_x = 2 in agents.json.
+# Returns: 2^13 × 3^48 × 5^1 × 7^1 × 11^3   (a 105-bit integer, not a prime)
 
-# Benefits:
-# - Unique (no collisions)
-# - Hierarchical (factorization reveals structure)
-# - Pattern matching via prime similarity
-# - Infinite scalability
+# Properties:
+# - Unique (no collisions): distinct field values give distinct codes,
+#   by unique factorization, as long as the field-to-prime map is fixed
+# - Decodable: dividing by the known field primes recovers every field
+#   (trial division by a fixed dictionary; no general factoring needed)
+# - Flat: one prime per field. Hierarchy needs a promotion registry
+#   (Prime-of-Primes monograph, Section 5); factorization alone does not add it
+# - Similarity: compare exponent vectors (which fields agree),
+#   never the numerical closeness of two codes
+# - Size: log2(code) = sum of (value + 1) * log2(prime) bits, linear in the
+#   field values. Store the sparse exponent map {prime: exponent} as the
+#   canonical form and the integer only as a checksum
 ```
+<!-- audit:B2 repaired -->
+<!-- audit:B3 repaired -->
+<!-- audit:B4 repaired -->
+<!-- audit:B5 removed -->
 
 **Integration Points:**
 
 - Encode every game state
 - Track decision history
 - Enable pattern matching across games
-- Compress long game histories
+- Index long game histories
 
 ### 2. Nibbler (Encoding/Pattern Recognition)
 
@@ -432,12 +448,12 @@ class AIPlayer:
 
 **Goals:**
 
-- Encode each game state as prime
-- Encode each decision as prime
+- Encode each game state as an integer code (sparse exponent map)
+- Encode each decision as an integer code (sparse exponent map)
 - Store in database
 - Demonstrate pattern matching
 
-**Deliverable:** Every game state has unique prime encoding, searchable
+**Deliverable:** Every game state has a unique code, searchable
 
 ### Phase 4: Basic Metrics (Week 4)
 

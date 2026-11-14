@@ -569,8 +569,8 @@ Hidden Information (revealed post-game):
 
 **Compression Condition (Prime of Primes):**
 
-- Intent states encoded as primes
-- Game history compressed mathematically
+- Intent states encoded as prime codes
+- Game history indexed by prime codes
 - Measure all 6 metrics
 - Compare to baseline
 
@@ -708,148 +708,201 @@ Analysis Methods:
 ### A. Hierarchical Intent Encoding
 
 **Concept:**
-Each level of intent hierarchy is encoded as a prime number, composing into a single mathematical representation.
+Each level of the intent hierarchy is encoded as a product of primes reserved for that level, and the levels multiply into a single integer whose prime factorization holds the whole hierarchy.
 
 **Encoding Scheme:**
+
+Each (level, field, value) triple owns its own prime, written p[level, field, value]. The four fields of a level are action, target, priority and deception.
 
 ```
 Level 1 Intent (My Goal):
 P₁ = encode_intent("Recruit Agent X")
-= 2^recruit × 3^agent_x × 5^high_priority
+= p[1, action, recruit] × p[1, target, agent_x] × p[1, priority, high] × p[1, deception, none]
 
 Level 2 Intent (Meta-Goal):
 P₂ = encode_meta_intent("Make opponents think I want Agent Y")
-= 7^deceive × 11^agent_y × 13^opponent_attention
+= p[2, action, deceive] × p[2, target, agent_y] × p[2, priority, high] × p[2, deception, opponent_attention]
 
 Level 3 Intent (Counter-Deception):
 P₃ = encode_counter("Predict they'll counter-recruit X while I feint Y")
-= 17^predict × 19^counter_strategy × 23^feint
+= p[3, action, predict] × p[3, target, counter_strategy] × p[3, priority, high] × p[3, deception, feint]
 
 Composite Intent Hierarchy:
 I_total = P₁ × P₂ × P₃
-= Single prime representing entire intent stack
+= a single integer (a product of 12 primes, not itself a prime)
+  whose prime factorization holds the entire intent stack
 ```
+<!-- audit:O1 repaired -->
 
 **Advantages:**
 
 ```
-1. Constant Space
-   - Arbitrary depth → single number
-   - No context window bloat
+1. Exact, Compact Size
+   - Arbitrary depth → a single number, but not constant space:
+     the code grows with depth, slightly faster than linearly
+     (at most 42, 91, 197, 428 and 923 bits at depth 1, 2, 4, 8, 16
+     with 100 values per field)
+   - Canonical form: the set of its primes; the integer is a checksum
 
 2. Hierarchical Access
-   - Factorize to access any level
+   - Trial division by the known prime dictionary recovers every level
    - P₁ = I_total / (P₂ × P₃)
 
 3. Pattern Matching
-   - Similar intents → nearby primes
-   - Mathematical similarity measures
+   - Similar intents share prime factors (same level, field and value)
+   - Similarity = Jaccard on factor sets; the numerical closeness
+     of two codes means nothing
 
-4. Lossless Compression
-   - Perfect reconstruction
-   - No information loss
+4. Lossless Encoding
+   - Perfect reconstruction: decode(encode(h)) = h for every hierarchy
+     within the declared ranges (unique factorization)
+   - Exact, not compressed: nothing is lost and nothing is shortened
 ```
+<!-- audit:O2 removed -->
+<!-- audit:O3 proved -->
+<!-- audit:O5 removed -->
+<!-- audit:O6 repaired -->
 
 ### B. Implementation Architecture
 
 ```python
+from math import isqrt
+
+
+def first_primes(count):
+    """The first `count` primes (sieve, doubling the bound until enough)."""
+    limit = 16
+    while True:
+        sieve = bytearray([1]) * (limit + 1)
+        sieve[0:2] = b'\x00\x00'
+        for i in range(2, isqrt(limit) + 1):
+            if sieve[i]:
+                sieve[i * i::i] = bytearray(len(range(i * i, limit + 1, i)))
+        primes = [i for i in range(limit + 1) if sieve[i]]
+        if len(primes) >= count:
+            return primes[:count]
+        limit *= 2
+
+
 class PrimeIntentEncoder:
     """
-    Encode intent hierarchies using Prime of Primes
+    Encode intent hierarchies using Prime of Primes.
+
+    Each (level, field, value) triple owns its own prime, so the ranges of
+    different levels and fields never overlap. A level is the product of its
+    four primes; the hierarchy is the product of its levels: one integer
+    whose prime factorization holds the whole intent stack.
+    Each level is a mapping with the four fields below, each a natural
+    number smaller than values_per_field.
     """
-    def __init__(self):
-        self.prime_base = PrimeOfPrimes()
+    FIELDS = ('action_id', 'target_id', 'priority', 'deception_level')
+
+    def __init__(self, max_depth=16, values_per_field=100):
+        self.max_depth = max_depth
+        self.values_per_field = values_per_field
+        self.primes = first_primes(max_depth * len(self.FIELDS) * values_per_field)
+        self.prime_index = {p: i for i, p in enumerate(self.primes)}
         self.intent_registry = {}
+
+    def get_prime(self, level, field_index, value):
+        """The prime reserved for this (level, field, value) triple."""
+        if not (isinstance(value, int) and 0 <= value < self.values_per_field):
+            raise ValueError(f'{self.FIELDS[field_index]} out of range: {value}')
+        slot = level * len(self.FIELDS) + field_index
+        return self.primes[slot * self.values_per_field + value]
 
     def encode_intent(self, intent_hierarchy):
         """
-        Encode multi-level intent as composite prime
+        Encode a multi-level intent as one integer code
         """
-        composite = 1
-
+        if len(intent_hierarchy) > self.max_depth:
+            raise ValueError('hierarchy deeper than max_depth')
+        code = 1
         for level, intent in enumerate(intent_hierarchy):
-            # Encode this level as prime
-            prime_encoding = self.encode_level(intent, level)
-
-            # Multiply into composite
-            composite *= prime_encoding
-
-        return composite
+            # Multiply this level's primes into the code
+            code *= self.encode_level(intent, level)
+        return code
 
     def encode_level(self, intent, level):
         """
-        Encode single intent level as prime
+        Encode a single intent level as the product of its four primes
         """
-        # Map intent components to prime factors
-        factors = {
-            'action_type': self.prime_base.get_prime(level * 100 + intent.action_id),
-            'target': self.prime_base.get_prime(level * 100 + intent.target_id),
-            'priority': self.prime_base.get_prime(level * 100 + intent.priority),
-            'deception': self.prime_base.get_prime(level * 100 + intent.deception_level)
-        }
+        part = 1
+        for field_index, field in enumerate(self.FIELDS):
+            part *= self.get_prime(level, field_index, intent[field])
+        return part
 
-        # Compose prime from factors
-        prime_encoding = 1
-        for component, prime_factor in factors.items():
-            prime_encoding *= prime_factor
-
-        return prime_encoding
-
-    def decode_intent(self, composite_prime):
+    def factor_set(self, code):
         """
-        Reconstruct intent hierarchy from composite prime
+        Primes of a code, by trial division over the known dictionary only
+        (no general factoring). Codes are squarefree by construction.
         """
-        # Factor the composite
-        factors = self.prime_base.factorize(composite_prime)
+        factors = set()
+        for p in self.primes:
+            if code == 1:
+                break
+            if code % p == 0:
+                code //= p
+                if code % p == 0:
+                    raise ValueError('not a valid intent code (repeated prime)')
+                factors.add(p)
+        if code != 1:
+            raise ValueError('not a valid intent code (prime outside dictionary)')
+        return factors
 
-        # Group factors by level
+    def decode_intent(self, code):
+        """
+        Reconstruct the intent hierarchy from its code
+        """
         levels = {}
-        for factor in factors:
-            level = factor // 100
-            if level not in levels:
-                levels[level] = []
-            levels[level].append(factor)
-
-        # Reconstruct each level
-        intent_hierarchy = []
-        for level in sorted(levels.keys()):
-            intent = self.reconstruct_level(levels[level])
-            intent_hierarchy.append(intent)
-
-        return intent_hierarchy
+        for p in self.factor_set(code):
+            # Decode by the prime's index, not its value
+            slot, value = divmod(self.prime_index[p], self.values_per_field)
+            level, field_index = divmod(slot, len(self.FIELDS))
+            field = self.FIELDS[field_index]
+            if field in levels.setdefault(level, {}):
+                raise ValueError('not a valid intent code (field repeated)')
+            levels[level][field] = value
+        depth = len(levels)
+        if sorted(levels) != list(range(depth)) or any(
+                len(fields) != len(self.FIELDS) for fields in levels.values()):
+            raise ValueError('not a valid intent code (incomplete level)')
+        return [levels[level] for level in range(depth)]
 
     def find_similar_intents(self, target_intent, threshold=0.8):
         """
-        Find intents with similar prime structure
+        Find stored intents that share prime factors with the target
         """
-        target_prime = self.encode_intent(target_intent)
+        target_code = self.encode_intent(target_intent)
         similar = []
 
-        for stored_intent, stored_prime in self.intent_registry.items():
-            similarity = self.prime_similarity(target_prime, stored_prime)
+        for stored_intent, stored_code in self.intent_registry.items():
+            similarity = self.prime_similarity(target_code, stored_code)
             if similarity >= threshold:
                 similar.append((stored_intent, similarity))
 
         return sorted(similar, key=lambda x: x[1], reverse=True)
 
-    def prime_similarity(self, prime1, prime2):
+    def prime_similarity(self, code1, code2):
         """
-        Calculate similarity between two prime-encoded intents
+        Jaccard similarity of the factor sets: the share of
+        (level, field, value) triples the two intents have in common
         """
-        # Factor both primes
-        factors1 = set(self.prime_base.factorize(prime1))
-        factors2 = set(self.prime_base.factorize(prime2))
+        factors1 = self.factor_set(code1)
+        factors2 = self.factor_set(code2)
 
-        # Jaccard similarity
         intersection = len(factors1 & factors2)
         union = len(factors1 | factors2)
 
         return intersection / union if union > 0 else 0
 ```
+<!-- audit:O4 repaired -->
+<!-- audit:O7 proved -->
 
 ### C. Context Window Extension Experiment
 
-**Hypothesis:** Prime encoding extends effective context window for intent tracking
+**Hypothesis (open, untested):** Prime encoding extends effective context window for intent tracking
+<!-- audit:O8 open -->
 
 **Experimental Design:**
 
@@ -862,7 +915,7 @@ Condition A: Standard Context (Baseline)
 
 Condition B: Prime-Compressed Context
 ├── Claude with same 200K token context
-├── Intent states encoded as primes
+├── Intent states encoded as prime codes
 ├── Historical game state compressed
 ├── Measure: How many turns before intent becomes confused?
 └── Hypothesis: Intent coherence maintained through all 100 turns
@@ -1106,7 +1159,7 @@ def measure_learning_curve(games_history):
 ```
 Florence Knowledge Base:
 ├── Lessons (nodes)
-│   ├── lesson_id: unique prime location
+│   ├── lesson_id: unique prime-code location
 │   ├── content: the actual lesson
 │   ├── source_game: which game it came from
 │   ├── source_ai: which AI discovered it
@@ -1120,7 +1173,7 @@ Florence Knowledge Base:
 │   └── effectiveness: how much does it improve performance
 │
 └── Meta-Patterns (higher-order)
-    ├── meta_pattern_id: composite prime
+    ├── meta_pattern_id: composite code (product of pattern codes)
     ├── component_patterns: patterns that compose it
     ├── emergence_conditions: when does this appear
     └── strategic_value: how important is this
@@ -2516,7 +2569,7 @@ Six novel metrics quantifying intent:
 
 We're developing:
 
-- **Prime of Primes encoding:** Compress intent hierarchies mathematically
+- **Prime of Primes encoding:** Encode intent hierarchies exactly as prime codes
 - **Florence knowledge system:** Propagate learnings across all AIs
 - **Nibbler pattern recognition:** Identify successful strategies
 - **Universal routing intelligence:** Apply learnings commercially

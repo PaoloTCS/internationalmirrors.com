@@ -1,0 +1,104 @@
+== Monograph: mathematics ==
+[PASS] 4.2/4.3 order independence, multiplicity sensitivity [items 1, 2]
+[PASS] 4.5 supp gcd(x,y) = supp x ∩ supp y [item 4]: exhaustive 1..300
+[PASS] 5.2 beta is a surjective hom fixing M [item 5]
+[PASS] 5.3 beta not injective: beta(pi1) = beta(2*3)
+[PASS] 5.4 normal form unique, maximal, section, injective (disjoint registry) [item 5]: x = 1..20000
+[PASS] 5.4 remark (a): overlapping registry gives two maximal presentations of 2*3*5: [{'b': 1, 2: 1}, {'a': 1, 5: 1}]
+[PASS] 5.4 remark (b): nu is not a hom: nu(2)nu(3) = 2*3 but nu(6) = pi1
+[PASS] 6.1/6.2/A.1 Rashomon classes partition M; distinct encodings share a class; divisibility antisymmetric [items 6, 15]
+[PASS] 7.1/7.2 orthogonality equivalences and clique criterion [item 7]: exhaustive 1..300 + 500 random cliques
+[PASS] 7.4 orthogonal after expansion implies disjoint supports in M' [item 9]
+[PASS] 7.4 converse fails: supp{pi1} vs {2,5} disjoint, gcd(6,10) = 2
+[PASS] 8.2 E additive [item 10]: exhaustive 1..119
+[PASS] 8.3 finite alphabet: Z(T) = product formula at T=0.5 [item 11]: 1.526865 vs 1.526865
+[PASS] 8.3 finite alphabet: Z(T) = product formula at T=3.0 [item 11]: 33.364547 vs 33.364547
+[PASS] 8.4(1) finite alphabet, positive weights: Z finite at T=50.0: Z=88653.55
+[PASS] 8.4(2) w=log p, T=0.5: Z = zeta(2): 1.644929
+[PASS] 8.4(2) w=log p, T=1: partial sums keep growing (no high-temperature regime): [9.787506036044382, 12.090136129863428]
+[PASS] 8.4(3) w(p_i)=i: sum e^(-w/T) finite at T=2.0
+[PASS] 8.4(3) w(p_i)=i: sum e^(-w/T) finite at T=20.0
+[PASS] 8.3 proof inequality a <= -log(1-a) <= a/(1-a)
+[PASS] 8.5 orthogonality involves neither w nor T [item 12]
+[PASS] 9.2(2)/C.7(3) support filter: unstable iff hallucination [item 13]: all exponent vectors in {0,1,2}^4
+[PASS] 9.2(3)/C.7(4) X = p1 uses supported primes but is unstable for T_W: [Fraction(1, 2), Fraction(1, 2), Fraction(0, 1), Fraction(0, 1)]
+[PASS] C.7(4) stable for T_W implies support within corpus primes
+[PASS] 9.3 d_w is a metric; d = E(lcm) - E(gcd) = log(lcm/gcd) [item 14]
+[PASS] 9.4 unique nearest supported encoding is the restriction to S: x = 1..2999, S = {2,3}
+[PASS] A.3(3) no-go: n*n = n only for n = 1 [item 17]
+[PASS] A.3(1,2,4) monoidal preorder; lcm is the categorical product; rad(xy) = lcm(rad x, rad y) [item 17]
+[PASS] A.2/A.4/A.5 rad and beta preserve divisibility (monotone, hence functors) [item 18]
+[PASS] A.5 hom with phi(p1)phi(p2) = pi forces a trivial factor [item 19]: [(0, 1), (1, 0)]
+[PASS] A.5 nu not monotone: 2 | 6 but nu(2) does not divide nu(6) in M'
+[PASS] A.6 ladder: composite expansion M_2 -> M_0 is a hom [item 20]
+[PASS] B.2 tower: gcd(<2,3>, 2*5) = 1 on presentations, while gcd of expansions = 2
+[PASS] B.1 (N0, gcd, x, 0, 1) is a commutative semiring with idempotent sum [item 21]: 0..39
+[PASS] B.1 remark: integer addition as alternative creates a new prime (2+3 = 5)
+[PASS] B.2 S_<=i (x) S_<=j in S_<=max, S_<=i (+) S_<=j in S_<=min [item 22]
+[PASS] B.2 not graded: pi1*pi2 has level 1, not 2
+[PASS] B.3 Rashomon class closed under gcd and x [item 23]: exhaustive 1..399
+[PASS] B.3 not an ideal: rad(2*3) != rad(2)
+[PASS] B.4 pairwise disjoint supports imply independence [item 24]
+[PASS] B.4 converse fails: 6, 10 independent though gcd = 2
+[PASS] B.4 4, 8 dependent (4^3 = 8^2)
+[PASS] B.5 H(presence record) <= number of primes [item 25]
+[PASS] B.5 examples: certain prime 0 bits; one of 8 equiprobable 3 bits
+[PASS] C.1 log-embedding is an injective hom (M_F,x) -> (H_F,+), F = primes <= 150 [item 26]
+[PASS] C.3(1) span of a Rashomon class = coordinate subspace on supp A [item 27]
+[PASS] C.3(2) H_B invariant iff block entries vanish
+[PASS] C.3(3) normal operator: invariant coordinate subspace has invariant complement
+[PASS] C.4 exact co-occurrence block => every eigenvector with nonzero eigenvalue constant on B [item 28]: 200 random corpora
+[PASS] C.4 converse: some stable eigenvector is non-constant on B when B is not a block: 200 random corpora
+[PASS] C.4.1 isolated block: |pi_B> eigenvector with lambda = |B| sum m_j^2, stable for T_W
+[PASS] C.5(3) normal (symmetric): eigenvectors of distinct eigenvalues orthogonal [item 29]
+[PASS] C.5(3) non-normal counterexample: eigenvectors (1,0),(1,1) not orthogonal
+[PASS] C.6 Laplacian PSD, quadratic form, ker = component-constant, D_T in (0,1], D_T -> P_ker as T -> 0 [item 30]
+[PASS] C.7(1) stable part keeps its norm, unstable part -> 0 [item 31]
+[PASS] C.7 T = I/2 has no stable vector (no |lambda| = 1), removing the old overlap
+[PASS] C.7 with all stable eigenvalues 1, a partly hallucinated X converges to its stable part, not to 0
+[PASS] C.7 T = diag(-1, 1/2): T^n X - T^n P_st X -> 0 but T^n X does not converge (stable part flips sign)
+[PASS] C.8 projection alone leaves encodings: (1/2, 1/2)
+[PASS] C.8 correction of p1 for corpus {p1 p2}: tie (0,0)/(1,1) broken to the tautology [item 32]
+[PASS] C.8(2) Pythagoras: nearest to X = nearest to P_st X within the stable lattice
+[PASS] C.8(4) support filter: correction = deletion of offending primes
+[PASS] S.1 dictionary: divisibility, gcd, lcm, product, orthogonality, energy [synthesis]: exhaustive 1..149
+
+== Briefing, Claude advice, GPT advice: mathematics and code ==
+[PASS] B1 example code is composite, not a prime [item B1]
+[PASS] B5 example size: 105 bits, as the text says [item B5]
+[PASS] B2/B3 decode by dividing by the field primes; injective [items B2, B3]
+[PASS] B4 numerical closeness is meaningless: codes for turn 47 and 48 differ by a factor 3
+[PASS] O4 corrected encoder present in the advice file and runs
+[PASS] O4/O6 decode(encode(h)) = h and no collisions, depth 1..16 [items O4, O6]: 3000 random hierarchies
+[PASS] O4 old bug fixed: level 1, action 5 decodes to level 1
+[PASS] O6 old bug fixed: action_id = 3 and priority = 3 get different primes
+[PASS] O4 old cross-level collision impossible: out-of-range ids are rejected, ranges disjoint
+[PASS] O3 P1 = I_total / (P2 x P3) [item O3]
+[PASS] O2 sizes quoted in the text match the encoder (not constant in depth) [item O2]: [42, 91, 197, 428, 923]
+[PASS] O7 Jaccard similarity on factor sets: one changed field out of 8 gives 7/9 [item O7]
+[PASS] O5 replaced: similarity is on shared factors, not numerical closeness [item O5]
+[PASS] O1 composite is a product of 12 primes, not a prime [item O1]
+[PASS] G3 log gcd / log lcm = log-weighted Jaccard; 0.204 for 6, 10 [item G3]
+[PASS] G1 a product of two or more primes is not prime [item G1]
+[PASS] G2 decoding with a known dictionary is trial division only [item G2]
+[PASS] G4 sparse exponent map is canonical (unique per element) [item G4]
+
+== Text ==
+[PASS] every audit item in mono tagged exactly once with the expected status: 32 items
+[PASS] every audit item in brief tagged exactly once with the expected status: 5 items
+[PASS] every audit item in claude tagged exactly once with the expected status: 8 items
+[PASS] every audit item in gpt tagged exactly once with the expected status: 4 items
+[PASS] false January sentences absent from mono: 12 phrases
+[PASS] false January sentences absent from brief: 7 phrases
+[PASS] false January sentences absent from claude: 7 phrases
+[PASS] false January sentences absent from gpt: 1 phrases
+[PASS] every cross-reference in the monograph points to a defined label: 26 references
+[PASS] monograph mentions no 'Recovery Graph'
+[PASS] monograph mentions no 'negative witness'
+[PASS] monograph mentions no 'negative-witness'
+[PASS] monograph mentions no 'Maestro'
+[PASS] monograph mentions no 'Rashomon cipher'
+[PASS] monograph mentions no 'patent'
+
+Summary: 96 of 96 checks pass
+Claim status across the four files: open 2, proved 11, removed 4, repaired 32 (total 49)

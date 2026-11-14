@@ -166,17 +166,21 @@ This makes IAC objective.
 
 Sonnet says “Composite Intent Hierarchy … Single prime representing entire intent stack.”
 The product of primes is **not** a prime; it’s a **unique-factorization code** (good), but huge.
+<!-- audit:G1 proved -->
 
 Two practical recommendations:
 
-1. **Do not rely on factoring** huge composites as a decoding mechanism. Factoring is expensive.
+1. **Do not rely on factoring** huge composites with unknown factors as a decoding mechanism; general factoring is expensive. With a known prime dictionary, decoding is trial division by the dictionary, which is cheap, and the sparse map below makes even that unnecessary.
 2. Use PoP as an **addressing / sparse-feature scheme**, not as an arithmetic object you must invert blindly.
+<!-- audit:G2 repaired -->
 
 A workable FIL-aligned design:
 
 - Maintain a sparse exponent map (\mathbf{e} = {(p_i, \alpha_i)}) as the canonical representation.
 - Store the big integer only as a hash-like checksum, if you want.
-- Similarity can be computed via gcd-like overlap on the factor sets (Jaccard on prime IDs), without factoring.
+- Similarity: gcd and lcm alone, without factoring, give the **log-weighted** Jaccard similarity, log gcd(a,b) / log lcm(a,b) = Σ_p min(α_p, β_p) log p / Σ_p max(α_p, β_p) log p. Plain (unweighted) Jaccard on prime IDs needs the factor sets, which the sparse exponent map already holds. The two differ: for 6 and 10, plain Jaccard is 1/3 and the log-weighted one is about 0.204.
+<!-- audit:G3 repaired -->
+<!-- audit:G4 proved -->
 
 This preserves your “mathematical compression / hierarchy” idea while staying implementable.
 
